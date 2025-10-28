@@ -1283,6 +1283,9 @@
 
             btnNext.addEventListener('click', () => {
                 collectStepData(currentStep);
+                if (navigator.vibrate) { // Vibrate on next button click
+                    navigator.vibrate(100);
+                }
                 advanceToNextStep();
             });
 
