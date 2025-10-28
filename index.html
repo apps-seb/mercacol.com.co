@@ -1006,6 +1006,12 @@
             const auth = firebase.auth();
             const db = firebase.firestore();
 
+            // Sign in anonymously on page load to allow read access to the database
+            auth.signInAnonymously().catch((error) => {
+                console.error("Error signing in anonymously:", error);
+                alert("No se pudo conectar con la base de datos. Por favor, recarga la página.");
+            });
+
             // Existing Survey Logic
             const steps = document.querySelectorAll('.survey-step');
             const totalSteps = steps.length;
@@ -1322,9 +1328,6 @@
                 btnFinish.textContent = 'Enviando...';
 
                 try {
-                    // Sign in anonymously
-                    await auth.signInAnonymously();
-
                     const user = auth.currentUser;
 
                     if (user) {
