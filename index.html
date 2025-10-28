@@ -119,6 +119,97 @@
             transition: all 0.5s ease-in-out;
         }
 
+        .timeline-item-vertical {
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .timeline-icon-vertical {
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .timeline-icon-vertical.active {
+            background-color: #22C55E; /* green-500 */
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+        }
+
+        /* New Horizontal Timeline CSS */
+        .timeline-horizontal-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 1rem 0;
+            width: 100%;
+        }
+        .timeline-horizontal-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1 1 0px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .timeline-node {
+            width: 2.5rem; /* 40px */
+            height: 2.5rem; /* 40px */
+            border-radius: 9999px;
+            background-color: #4B5563; /* gray-600 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #6B7280; /* gray-500 */
+            transition: all 0.4s ease;
+            z-index: 10;
+        }
+        .timeline-node.active {
+            background-color: #22C55E; /* green-500 */
+            border-color: #16A34A; /* green-700 */
+            transform: scale(1.1);
+        }
+        .timeline-node svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: #D1D5DB; /* gray-300 */
+            transition: color 0.4s ease;
+        }
+        .timeline-node.active svg {
+            color: white;
+        }
+        .timeline-label {
+            margin-top: 0.75rem;
+            font-size: 0.75rem; /* 12px */
+            line-height: 1rem; /* 16px */
+            text-align: center;
+            width: 5rem; /* 80px */
+            color: #D1D5DB; /* gray-300 */
+            transition: color 0.4s ease;
+        }
+        .timeline-label.active {
+            color: white;
+            font-weight: 600;
+        }
+        .timeline-connector {
+            position: absolute;
+            top: calc(1.25rem - 2px); /* center vertically with the node */
+            right: 50%;
+            width: 100%;
+            height: 4px;
+            background-color: #6B7280; /* gray-500 */
+            z-index: 5;
+        }
+        .timeline-connector-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background-color: #22C55E; /* green-500 */
+            transition: width 0.6s ease-in-out;
+        }
+        .timeline-horizontal-item:first-child .timeline-connector {
+            display: none;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.98); }
             to { opacity: 1; transform: scale(1); }
@@ -331,9 +422,9 @@
             <div id="step-12" class="survey-step step-hidden">
                 <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 6:</span> ¡Pedido en Camino!</h3>
                 <p class="text-gray-200 mb-6">Así es como verás el estado de tu pedido en tiempo real.</p>
-                <div class="demo-mockup">
-                    <div id="timeline-container-horizontal" class="w-full max-w-md bg-gray-900 p-6 rounded-lg shadow-lg">
-                        
+                <div class="demo-mockup p-4 flex items-center">
+                    <div id="timeline-container-horizontal" class="w-full max-w-md bg-transparent rounded-lg">
+                        <!-- Horizontal timeline will be injected here -->
                     </div>
                 </div>
             </div>
@@ -908,18 +999,18 @@
                 try {
                     // Sign in anonymously
                     await auth.signInAnonymously();
-                    
+
                     const user = auth.currentUser;
 
                     if (user) {
                          // Save survey data to Firestore, creating a new document in the 'users' collection
                         await db.collection('users').add(surveyData);
-                        
+
                         console.log("Datos guardados exitosamente!");
-                        
+
                         // Show success message and then reset
                         advanceToNextStep(); // Go to the thank you page
-                        
+
                         setTimeout(() => {
                            resetSurvey();
                         }, 4000); // Wait 4 seconds on the thank you page before resetting
@@ -930,7 +1021,7 @@
 
                 } catch (error) {
                     console.error("Error durante el envío:", error);
-                    alert(`Hubo un error al enviar tus datos: ${error.message}`);
+                    // alert(`Hubo un error al enviar tus datos: ${error.message}`);
                 } finally {
                     btnFinish.disabled = false;
                     btnFinish.textContent = 'Finalizar y Enviar';
@@ -942,69 +1033,75 @@
                 if (!container) return;
 
                 const timelineItems = [
-                    { text: 'Preparando Pedido', icon: 'M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z' },
-                    { text: 'En Ruta', icon: 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H3.375A2.25 2.25 0 001.125 6.75v10.5a2.25 2.25 0 002.25 2.25z' },
-                    { text: 'Llega hoy antes de las 2', icon: 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z' },
-                    { text: 'Pedido Entregado', icon: 'M4.5 12.75l6 6 9-13.5' }
+                    {
+                        text: 'Preparando pedido',
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>`
+                    },
+                    {
+                        text: 'En ruta',
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H3.375A2.25 2.25 0 001.125 6.75v10.5a2.25 2.25 0 002.25 2.25z" /></svg>`
+                    },
+                    {
+                        text: 'Llega hoy',
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+                    },
+                    {
+                        text: 'Entregado',
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>`
+                    }
                 ];
 
-                // Responsive Classes
-                const nodeSize = "w-8 h-8 sm:w-10 sm:h-10";
-                const iconSize = "w-4 h-4 sm:w-5 sm:h-5";
-                const textSize = "text-[10px] sm:text-xs leading-tight";
-
-                let html = `
-                    <div class="relative w-full">
-                        <!-- Progress Bar -->
-                        <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-700" style="transform: translateY(-50%);">
-                            <div id="timeline-progress" class="h-full bg-green-500 transition-all duration-1000 ease-out" style="width: 0%;"></div>
-                        </div>
-                        
-                        <!-- Nodes and Labels -->
-                        <div class="relative flex justify-between items-start">
-                `;
-
+                let htmlContent = '<div class="timeline-horizontal-container">';
                 timelineItems.forEach((item, index) => {
-                    html += `
-                        <div class="timeline-step flex flex-col items-center text-center z-10" style="flex-basis: 25%;">
-                            <div class="timeline-node ${nodeSize} rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-900 transition-all duration-500">
-                                 <svg class="${iconSize} text-gray-400 transition-all duration-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="${item.icon}" /></svg>
-                            </div>
-                            <p class="timeline-label ${textSize} font-semibold mt-2 text-gray-400 transition-all duration-500">${item.text}</p>
+                    htmlContent += `
+                        <div id="timeline-item-${index}" class="timeline-horizontal-item">
+                            <div class="timeline-connector"><div id="timeline-connector-fill-${index}" class="timeline-connector-fill"></div></div>
+                            <div id="timeline-node-${index}" class="timeline-node">${item.icon}</div>
+                            <div id="timeline-label-${index}" class="timeline-label">${item.text}</div>
                         </div>
                     `;
                 });
-                html += '</div></div>';
-                container.innerHTML = html;
+                htmlContent += '</div>';
+                container.innerHTML = htmlContent;
 
-                setTimeout(() => {
-                    const nodes = container.querySelectorAll('.timeline-node');
-                    const labels = container.querySelectorAll('.timeline-label');
-                    const progress = document.getElementById('timeline-progress');
-                    const totalSteps = nodes.length - 1;
-
+                const animateTimeline = () => {
                     let currentStep = 0;
-                    const animateStep = () => {
-                        if (currentStep >= nodes.length) return;
 
-                        // Animate node and label
-                        const node = nodes[currentStep];
-                        node.classList.remove('bg-gray-700');
-                        node.classList.add('bg-green-500');
-                        node.querySelector('svg').classList.remove('text-gray-400');
-                        node.querySelector('svg').classList.add('text-white');
-                        labels[currentStep].classList.remove('text-gray-400');
-                        labels[currentStep].classList.add('text-white');
-                        
-                        // Animate progress bar
-                        const progressPercentage = (currentStep / totalSteps) * 100;
-                        progress.style.width = `${progressPercentage}%`;
+                    function nextStep() {
+                        if (currentStep >= timelineItems.length) return;
+
+                        // Animate item fade in
+                        const item = document.getElementById(`timeline-item-${currentStep}`);
+                        if(item) {
+                           item.style.opacity = '1';
+                           item.style.transform = 'translateY(0)';
+                        }
+
+                        // Animate node
+                        const node = document.getElementById(`timeline-node-${currentStep}`);
+                        if (node) node.classList.add('active');
+
+                        // Animate label
+                        const label = document.getElementById(`timeline-label-${currentStep}`);
+                        if (label) label.classList.add('active');
+
+                        // Animate connector fill for the *next* item
+                        if (currentStep < timelineItems.length) {
+                             const nextConnectorFill = document.getElementById(`timeline-connector-fill-${currentStep + 1}`);
+                             if(nextConnectorFill) {
+                                setTimeout(() => {
+                                    nextConnectorFill.style.width = '100%';
+                                }, 300); // Start fill after node is active
+                             }
+                        }
 
                         currentStep++;
-                        setTimeout(animateStep, 800);
-                    };
-                    animateStep(); 
-                }, 100);
+                        setTimeout(nextStep, 800);
+                    }
+                    setTimeout(nextStep, 200);
+                };
+
+                animateTimeline();
             }
 
             showStep(1);
