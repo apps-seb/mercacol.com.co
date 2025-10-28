@@ -9,6 +9,10 @@
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <!-- jsPDF and xlsx libraries for export functionality -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -220,9 +224,9 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-purple-900 via-gray-900 to-green-900 min-h-screen flex items-center justify-center p-4 text-white">
+<body class="bg-gradient-to-br from-purple-900 via-gray-900 to-green-900 min-h-screen flex items-center justify-center p-4 pb-28 text-white">
 
-    <div id="survey-wrapper" class="view-section bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl max-w-lg w-full overflow-hidden border border-white/20 pb-24">
+    <div id="survey-wrapper" class="view-section bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl max-w-lg w-full overflow-hidden border border-white/20">
         
         <header class="p-6 border-b border-white/20 flex items-center space-x-4">
             <svg class="w-10 h-10 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -291,19 +295,317 @@
             </div>
 
             <div id="step-4" class="survey-step step-hidden">
-                <h3 class="text-xl font-semibold mb-6">3. ¿En qué comuna o barrio de Popayán está tu tienda?</h3>
+                <h3 class="text-xl font-semibold mb-6">3. ¿En qué barrio de Popayán está tu tienda?</h3>
                 <p class="text-sm text-gray-300 mb-4">Esto nos ayudará a planificar nuestras rutas de entrega.</p>
                 <select name="ubicacion" class="w-full p-3 rounded-lg border outline-none placeholder-gray-300 text-white form-input-glass ring-1 ring-transparent focus:ring-green-400">
-                    <option value="" disabled selected>Selecciona tu comuna o barrio</option>
-                    <option value="comuna_1">Comuna 1 - Norte</option>
-                    <option value="comuna_2">Comuna 2 - Norte</option>
-                    <option value="comuna_3">Comuna 3 - Occidente</option>
-                    <option value="comuna_4">Comuna 4 - Centro</option>
-                    <option value="comuna_5">Comuna 5 - Sur</option>
-                    <option value="comuna_6">Comuna 6 - Sur-Oriente</option>
-                    <option value="comuna_7">Comuna 7 - Occidente</option>
-                    <option value="comuna_8">Comuna 8 - Sur-Occidente</option>
-                    <option value="comuna_9">Comuna 9 - Sur</option>
+                    <option value="" disabled selected>Selecciona tu barrio</option>
+                    <optgroup label="Comuna 1">
+                        <option value="Modelo">Modelo</option>
+                        <option value="Loma Linda">Loma Linda</option>
+                        <option value="Prados del Norte">Prados del Norte</option>
+                        <option value="La Cabaña">La Cabaña</option>
+                        <option value="Santa Clara">Santa Clara</option>
+                        <option value="Casas Fiscales">Casas Fiscales</option>
+                        <option value="Nueva Granada">Nueva Granada</option>
+                        <option value="Machangara">Machangara</option>
+                        <option value="La Playa">La Playa</option>
+                        <option value="Campamento">Campamento</option>
+                        <option value="Puerta de Hierro">Puerta de Hierro</option>
+                        <option value="Catay">Catay</option>
+                        <option value="Antonio Nariño">Antonio Nariño</option>
+                        <option value="Villa Paola">Villa Paola</option>
+                        <option value="Campo Bello">Campo Bello</option>
+                        <option value="El recuerdo">El recuerdo</option>
+                        <option value="La Villa">La Villa</option>
+                        <option value="Bloques de Pubenza">Bloques de Pubenza</option>
+                        <option value="Belalcázar">Belalcázar</option>
+                        <option value="Los Laureles">Los Laureles</option>
+                        <option value="Los Rosales">Los Rosales</option>
+                        <option value="Alcalá">Alcalá</option>
+                        <option value="Monte Rosales">Monte Rosales</option>
+                        <option value="Fancal Capri">Fancal Capri</option>
+                        <option value="Maria Alejandra">Maria Alejandra</option>
+                        <option value="Navarra">Navarra</option>
+                        <option value="Cerritos de la Paz">Cerritos de la Paz</option>
+                    </optgroup>
+                    <optgroup label="Comuna 2">
+                        <option value="Villa Melisa">Villa Melisa</option>
+                        <option value="Esperanza">Esperanza</option>
+                        <option value="Canterbury">Canterbury</option>
+                        <option value="La Arboleda">La Arboleda</option>
+                        <option value="El Uvo">El Uvo</option>
+                        <option value="San Ignacio">San Ignacio</option>
+                        <option value="Bella Vista">Bella Vista</option>
+                        <option value="El Bambú">El Bambú</option>
+                        <option value="Cruz Roja">Cruz Roja</option>
+                        <option value="Río Vista">Río Vista</option>
+                        <option value="Bello Horizonte">Bello Horizonte</option>
+                        <option value="El Placer">El Placer</option>
+                        <option value="Villa del Norte">Villa del Norte</option>
+                        <option value="La Primavera">La Primavera</option>
+                        <option value="Rinconcito Primaveral">Rinconcito Primaveral</option>
+                        <option value="La Florida">La Florida</option>
+                        <option value="Barrio González">Barrio González</option>
+                        <option value="El Tablazo">El Tablazo</option>
+                        <option value="Morinda">Morinda</option>
+                        <option value="Destechados">Destechados</option>
+                        <option value="Santiago de Cali">Santiago de Cali</option>
+                        <option value="Zuldemaida">Zuldemaida</option>
+                        <option value="María Paz">María Paz</option>
+                        <option value="Balcón Norte">Balcón Norte</option>
+                        <option value="Pino Pardo">Pino Pardo</option>
+                        <option value="Matamoros">Matamoros</option>
+                        <option value="Chamizal">Chamizal</option>
+                        <option value="Tóez">Tóez</option>
+                        <option value="Villa Claudia">Villa Claudia</option>
+                        <option value="Guayacanes del Río">Guayacanes del Río</option>
+                        <option value="Pinar">Pinar</option>
+                        <option value="Los Cámbulos">Los Cámbulos</option>
+                        <option value="Luna Blanca">Luna Blanca</option>
+                        <option value="Cordillera">Cordillera</option>
+                        <option value="Villa del Viento">Villa del Viento</option>
+                        <option value="Pinares Canal de Brujas">Pinares Canal de Brujas</option>
+                        <option value="Los Ángeles">Los Ángeles</option>
+                        <option value="Galilea">Galilea</option>
+                        <option value="Atardeceres de la Pradera">Atardeceres de la Pradera</option>
+                        <option value="Pinos Llano">Pinos Llano</option>
+                        <option value="Nueva Alianza">Nueva Alianza</option>
+                        <option value="Pinares del Río">Pinares del Río</option>
+                        <option value="Nuevo Tequendama">Nuevo Tequendama</option>
+                        <option value="Rincón de la Aldea">Rincón de la Aldea</option>
+                        <option value="Trece de Octubre">Trece de Octubre</option>
+                        <option value="San Gerardo">San Gerardo</option>
+                        <option value="Bosques del Pinar">Bosques del Pinar</option>
+                        <option value="Quintas de José Miguel">Quintas de José Miguel</option>
+                        <option value="Minuto de Dios">Minuto de Dios</option>
+                        <option value="Divino Niño">Divino Niño</option>
+                        <option value="Álamos del Norte">Álamos del Norte</option>
+                        <option value="Villa Diana">Villa Diana</option>
+                        <option value="Renacer">Renacer</option>
+                        <option value="El Encanto">El Encanto</option>
+                        <option value="San Fernando">San Fernando</option>
+                        <option value="Rincón de Comfacauca">Rincón de Comfacauca</option>
+                        <option value="Rinconcito Primaveral II">Rinconcito Primaveral II</option>
+                        <option value="Capri">Capri</option>
+                        <option value="Gran Bretaña">Gran Bretaña</option>
+                    </optgroup>
+                    <optgroup label="Comuna 3">
+                        <option value="Bolívar">Bolívar</option>
+                        <option value="Ciudad Jardín">Ciudad Jardín</option>
+                        <option value="Periodistas">Periodistas</option>
+                        <option value="Sotará">Sotará</option>
+                        <option value="Deportistas">Deportistas</option>
+                        <option value="Los Hoyos">Los Hoyos</option>
+                        <option value="Yambitará">Yambitará</option>
+                        <option value="Villa Mercedes">Villa Mercedes</option>
+                        <option value="Yanaconas">Yanaconas</option>
+                        <option value="La Ximena">La Ximena</option>
+                        <option value="Palacé">Palacé</option>
+                        <option value="Pueblillo">Pueblillo</option>
+                        <option value="Vega de Prieto">Vega de Prieto</option>
+                        <option value="José Antonio Galán">José Antonio Galán</option>
+                        <option value="Tres Margaritas">Tres Margaritas</option>
+                        <option value="Torres del Río">Torres del Río</option>
+                        <option value="Galicia">Galicia</option>
+                        <option value="Nuevo Yambitará">Nuevo Yambitará</option>
+                        <option value="La Virginia">La Virginia</option>
+                        <option value="Rincón de la Estancia">Rincón de la Estancia</option>
+                        <option value="Moravia">Moravia</option>
+                        <option value="Aida Lucía">Aida Lucía</option>
+                        <option value="Alicante">Alicante</option>
+                        <option value="Acacias">Acacias</option>
+                        <option value="Ucrania">Ucrania</option>
+                        <option value="Rincón del Río">Rincón del Río</option>
+                        <option value="Chicalá">Chicalá</option>
+                        <option value="La Estancia">La Estancia</option>
+                        <option value="Rincón de la Ximena">Rincón de la Ximena</option>
+                        <option value="Recodo del Río">Recodo del Río</option>
+                        <option value="Urbanización Yanaconas">Urbanización Yanaconas</option>
+                        <option value="Altos del Río">Altos del Río</option>
+                        <option value="Poblados de San Miguel">Poblados de San Miguel</option>
+                        <option value="Portales del Norte">Portales del Norte</option>
+                        <option value="Rincón de Yambitará">Rincón de Yambitará</option>
+                        <option value="Arcos de Yanaconas">Arcos de Yanaconas</option>
+                        <option value="La Floresta">La Floresta</option>
+                        <option value="Portón de Palacé">Portón de Palacé</option>
+                        <option value="Molinos de la Estancia">Molinos de la Estancia</option>
+                        <option value="Villa Alicia">Villa Alicia</option>
+                        <option value="Portal de la Vega">Portal de la Vega</option>
+                        <option value="Portón de la Hacienda">Portón de la Hacienda</option>
+                        <option value="La Cristina">La Cristina</option>
+                        <option value="Poblado de San Esteban">Poblado de San Esteban</option>
+                        <option value="Real Independencia">Real Independencia</option>
+                        <option value="El Recuerdo I">El Recuerdo I</option>
+                        <option value="Villa del Prado">Villa del Prado</option>
+                    </optgroup>
+                    <optgroup label="Comuna 4">
+                        <option value="Cadillal">Cadillal</option>
+                        <option value="Valencia">Valencia</option>
+                        <option value="El Achiral">El Achiral</option>
+                        <option value="Las Américas">Las Américas</option>
+                        <option value="Colombia I Etapa">Colombia I Etapa</option>
+                        <option value="Argentina">Argentina</option>
+                        <option value="San Camilo">San Camilo</option>
+                        <option value="El Empedrado">El Empedrado</option>
+                        <option value="Hernando Lora">Hernando Lora</option>
+                        <option value="Moscopán">Moscopán</option>
+                        <option value="Obrero">Obrero</option>
+                        <option value="Santa Inés">Santa Inés</option>
+                        <option value="Fucha">Fucha</option>
+                        <option value="Loma de Cartagena">Loma de Cartagena</option>
+                        <option value="La Pamba">La Pamba</option>
+                        <option value="El Liceo">El Liceo</option>
+                        <option value="Caldas">Caldas</option>
+                        <option value="El Refugio">El Refugio</option>
+                        <option value="San Rafael">San Rafael</option>
+                        <option value="Los Álamos">Los Álamos</option>
+                        <option value="Centro">Centro</option>
+                        <option value="Siglo xx">Siglo xx</option>
+                        <option value="El Prado">El Prado</option>
+                        <option value="Vásquez Cobo">Vásquez Cobo</option>
+                        <option value="Santa Teresita">Santa Teresita</option>
+                        <option value="Pomona">Pomona</option>
+                        <option value="Bosques de Pomona">Bosques de Pomona</option>
+                        <option value="Portales del Río">Portales del Río</option>
+                        <option value="Santa Catalina">Santa Catalina</option>
+                        <option value="Belén">Belén</option>
+                        <option value="Villa Helena">Villa Helena</option>
+                        <option value="Fundecur">Fundecur</option>
+                        <option value="Provitec II Etapa">Provitec II Etapa</option>
+                    </optgroup>
+                    <optgroup label="Comuna 5">
+                        <option value="Avelino Ull">Avelino Ull</option>
+                        <option value="Los Braseros">Los Braseros</option>
+                        <option value="El Lago">El Lago</option>
+                        <option value="Berlín">Berlín</option>
+                        <option value="Suizo">Suizo</option>
+                        <option value="Las Ferias">Las Ferias</option>
+                        <option value="La Campiña">La Campiña</option>
+                        <option value="María Oriente">María Oriente</option>
+                        <option value="Los Sauces">Los Sauces</option>
+                        <option value="Santa Mónica">Santa Mónica</option>
+                        <option value="La Floresta">La Floresta</option>
+                        <option value="Los Andes">Los Andes</option>
+                        <option value="Colgate Palmolive">Colgate Palmolive</option>
+                        <option value="Alameda">Alameda</option>
+                        <option value="Plateado">Plateado</option>
+                        <option value="Poblado Alto">Poblado Alto</option>
+                        <option value="Alto de Pubenza">Alto de Pubenza</option>
+                        <option value="Villa Oriente">Villa Oriente</option>
+                    </optgroup>
+                    <optgroup label="Comuna 6">
+                        <option value="Nueva Granada">Nueva Granada</option>
+                        <option value="San Rafael">San Rafael</option>
+                        <option value="Samuel Silverio">Samuel Silverio</option>
+                        <option value="Camino Real">Camino Real</option>
+                        <option value="Nuevo Deán">Nuevo Deán</option>
+                        <option value="El Salvador">El Salvador</option>
+                        <option value="Santa Rita">Santa Rita</option>
+                        <option value="San José de los Tejares">San José de los Tejares</option>
+                        <option value="Pajonal">Pajonal</option>
+                        <option value="Santa Fe">Santa Fe</option>
+                        <option value="La Ladera">La Ladera</option>
+                        <option value="José Hilario López">José Hilario López</option>
+                        <option value="Valparaíso">Valparaíso</option>
+                        <option value="Primero de Mayo">Primero de Mayo</option>
+                        <option value="Los Comuneros">Los Comuneros</option>
+                        <option value="Loma de la Virgen">Loma de la Virgen</option>
+                        <option value="Sindical II">Sindical II</option>
+                        <option value="Alfonso López">Alfonso López</option>
+                        <option value="Calicanto">Calicanto</option>
+                        <option value="Gabriel García Márquez">Gabriel García Márquez</option>
+                        <option value="El Boquerón">El Boquerón</option>
+                        <option value="Jorge Eliécer Gaitán">Jorge Eliécer Gaitán</option>
+                        <option value="El Limonar">El Limonar</option>
+                        <option value="La Paz Sur">La Paz Sur</option>
+                        <option value="La Gran Victoria">La Gran Victoria</option>
+                        <option value="Versalles II">Versalles II</option>
+                        <option value="Villa del Carmen">Villa del Carmen</option>
+                        <option value="Colina">Colina</option>
+                        <option value="Nuevo Japón">Nuevo Japón</option>
+                        <option value="Nuevo País">Nuevo País</option>
+                        <option value="Tejares de Otón">Tejares de Otón</option>
+                        <option value="Veraneras">Veraneras</option>
+                        <option value="Villareal">Villareal</option>
+                        <option value="Villa del Sur">Villa del Sur</option>
+                        <option value="Palermo">Palermo</option>
+                        <option value="Villa Hermosa">Villa Hermosa</option>
+                        <option value="Nueva Frontera">Nueva Frontera</option>
+                        <option value="El Recuerdo">El Recuerdo</option>
+                        <option value="Colinas de Calicanto">Colinas de Calicanto</option>
+                    </optgroup>
+                    <optgroup label="Comuna 7">
+                        <option value="Nazaret">Nazaret</option>
+                        <option value="Isabela">Isabela</option>
+                        <option value="Las Palmas I y II">Las Palmas I y II</option>
+                        <option value="Colombia II Etapa">Colombia II Etapa</option>
+                        <option value="Campos">Campos</option>
+                        <option value="Treinta y Uno de Marzo">Treinta y Uno de Marzo</option>
+                        <option value="El Mirador">El Mirador</option>
+                        <option value="Tomas Cipriano de Mosquera">Tomas Cipriano de Mosquera</option>
+                        <option value="Las Vegas">Las Vegas</option>
+                        <option value="Solidaridad">Solidaridad</option>
+                        <option value="Chapinero">Chapinero</option>
+                        <option value="Retiro Alto">Retiro Alto</option>
+                        <option value="Nuevo Popayán">Nuevo Popayán</option>
+                        <option value="La Unión">La Unión</option>
+                        <option value="La Libertad">La Libertad</option>
+                        <option value="La Conquista">La Conquista</option>
+                        <option value="Las Brisas">Las Brisas</option>
+                        <option value="Independencia">Independencia</option>
+                        <option value="Santa Librada">Santa Librada</option>
+                        <option value="Villa del Carmen">Villa del Carmen</option>
+                        <option value="Corsocial">Corsocial</option>
+                        <option value="La Heroica">La Heroica</option>
+                        <option value="Nuevo Hogar">Nuevo Hogar</option>
+                        <option value="Santo Domingo Sabio I">Santo Domingo Sabio I</option>
+                        <option value="Villas del Palmar">Villas del Palmar</option>
+                        <option value="Villa Occidente">Villa Occidente</option>
+                        <option value="Santo Domingo Sabio II">Santo Domingo Sabio II</option>
+                        <option value="Villa España">Villa España</option>
+                        <option value="San Fernando">San Fernando</option>
+                        <option value="Panamericano">Panamericano</option>
+                        <option value="Nuevo Milenio">Nuevo Milenio</option>
+                        <option value="Los Álamos de Occidente">Los Álamos de Occidente</option>
+                        <option value="Múnich">Múnich</option>
+                        <option value="La Campiña">La Campiña</option>
+                    </optgroup>
+                    <optgroup label="Comuna 8">
+                        <option value="Camilo Torres">Camilo Torres</option>
+                        <option value="Junín">Junín</option>
+                        <option value="Santa Elena">Santa Elena</option>
+                        <option value="Popular">Popular</option>
+                        <option value="Canadá">Canadá</option>
+                        <option value="Llano Largo">Llano Largo</option>
+                        <option value="José María Obando">José María Obando</option>
+                        <option value="Minuto de Dios">Minuto de Dios</option>
+                        <option value="Guayabal">Guayabal</option>
+                        <option value="Esmeralda">Esmeralda</option>
+                        <option value="Libertador">Libertador</option>
+                        <option value="Pandiguando">Pandiguando</option>
+                        <option value="La Isla">La Isla</option>
+                        <option value="El Triunfo">El Triunfo</option>
+                        <option value="Esperanza Sur">Esperanza Sur</option>
+                        <option value="La Isla II">La Isla II</option>
+                        <option value="Perpetuo Socorro">Perpetuo Socorro</option>
+                        <option value="Junín II Etapa">Junín II Etapa</option>
+                    </optgroup>
+                    <optgroup label="Comuna 9">
+                        <option value="Los Naranjos">Los Naranjos</option>
+                        <option value="María Occidente">María Occidente</option>
+                        <option value="Cinco de Abril">Cinco de Abril</option>
+                        <option value="Nuevo Hogar">Nuevo Hogar</option>
+                        <option value="Carlos Primero">Carlos Primero</option>
+                        <option value="La Sombrilla">La Sombrilla</option>
+                        <option value="San José">San José</option>
+                        <option value="Kennedy">Kennedy</option>
+                        <option value="San Antonio de Padua">San Antonio de Padua</option>
+                        <option value="Capitana">Capitana</option>
+                        <option value="Mis Ranchitos">Mis Ranchitos</option>
+                        <option value="Lomas de Granada">Lomas de Granada</option>
+                        <option value="Nuevo San José">Nuevo San José</option>
+                        <option value="El Edén">El Edén</option>
+                    </optgroup>
                     <option value="otro_barrio">Otro / Vereda</option>
                 </select>
             </div>
@@ -577,6 +879,29 @@
             </div>
         </header>
         <main class="p-8" style="max-height: 70vh; overflow-y: auto;">
+            <div class="bg-white/5 p-4 rounded-lg border border-white/10 mb-6">
+                <h3 class="text-lg font-semibold mb-4 text-white">Exportar Datos</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="start-date" class="text-sm text-gray-300">Fecha de inicio</label>
+                        <input type="date" id="start-date" class="w-full p-2 mt-1 rounded-lg border outline-none text-white form-input-glass ring-1 ring-transparent focus:ring-green-400">
+                    </div>
+                    <div>
+                        <label for="end-date" class="text-sm text-gray-300">Fecha de fin</label>
+                        <input type="date" id="end-date" class="w-full p-2 mt-1 rounded-lg border outline-none text-white form-input-glass ring-1 ring-transparent focus:ring-green-400">
+                    </div>
+                </div>
+                <div class="flex space-x-4 mt-4">
+                    <button id="export-pdf" class="flex-1 flex items-center justify-center space-x-2 font-bold py-3 px-4 rounded-full shadow-lg transform transition-all duration-300 bg-purple-600 text-white hover:bg-purple-700 hover:scale-105 active:scale-95">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 005.625 21h12.75c1.243 0 2.25-1.007 2.25-2.25V11.25a9 9 0 00-9-9z" /></svg>
+                        <span>Exportar PDF</span>
+                    </button>
+                    <button id="export-excel" class="flex-1 flex items-center justify-center space-x-2 font-bold py-3 px-4 rounded-full shadow-lg transform transition-all duration-300 bg-green-600 text-white hover:bg-green-700 hover:scale-105 active:scale-95">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                        <span>Exportar Excel</span>
+                    </button>
+                </div>
+            </div>
             <div id="user-list-container" class="space-y-4">
                 <!-- User cards will be injected here by JavaScript -->
                 <p class="text-center text-gray-300">Aún no hay usuarios registrados.</p>
@@ -1003,7 +1328,10 @@
                     const user = auth.currentUser;
 
                     if (user) {
-                         // Save survey data to Firestore, creating a new document in the 'users' collection
+                         // Add a timestamp to the survey data
+                        surveyData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+
+                        // Save survey data to Firestore, creating a new document in the 'users' collection
                         await db.collection('users').add(surveyData);
 
                         console.log("Datos guardados exitosamente!");
@@ -1106,6 +1434,119 @@
 
             showStep(1);
             renderAllDemoParts();
+
+            // Export Logic
+            const btnExportPdf = document.getElementById('export-pdf');
+            const btnExportExcel = document.getElementById('export-excel');
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
+
+            async function fetchUsersForExport(startDate, endDate) {
+                try {
+                    let query = db.collection('users');
+
+                    if (startDate) {
+                        query = query.where('createdAt', '>=', startDate);
+                    }
+                    if (endDate) {
+                        // To include the whole end day, we set the time to 23:59:59
+                        const endOfDay = new Date(endDate);
+                        endOfDay.setHours(23, 59, 59, 999);
+                        query = query.where('createdAt', '<=', endOfDay);
+                    }
+
+                    const snapshot = await query.orderBy('createdAt', 'desc').get();
+
+                    if (snapshot.empty) {
+                        alert("No hay usuarios registrados en el rango de fechas seleccionado.");
+                        return [];
+                    }
+
+                    return snapshot.docs.map(doc => doc.data());
+
+                } catch (error) {
+                    console.error("Error fetching users for export:", error);
+                    alert("Hubo un error al obtener los datos. Revisa la consola para más detalles.");
+                    return [];
+                }
+            }
+
+            function exportToPDF(users) {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(20);
+                doc.setTextColor(107, 33, 168); // Purple
+                doc.text("Reporte de Usuarios Registrados", 15, 20);
+
+                doc.setFontSize(10);
+                doc.setTextColor(34, 197, 94); // Green
+                doc.text(`Fecha de generación: ${new Date().toLocaleDateString('es-CO')}`, 15, 28);
+
+                const tableColumn = ["Nombre", "WhatsApp", "Correo", "Dirección / Tienda"];
+                const tableRows = [];
+
+                users.forEach(user => {
+                    const userData = [
+                        user.nombre_completo || '',
+                        user.whatsapp || '',
+                        user.email || '',
+                        user.direccion || '',
+                    ];
+                    tableRows.push(userData);
+                });
+
+                doc.autoTable({
+                    head: [tableColumn],
+                    body: tableRows,
+                    startY: 35,
+                    theme: 'grid',
+                    headStyles: {
+                        fillColor: [107, 33, 168], // Purple
+                        textColor: [255, 255, 255]
+                    },
+                    alternateRowStyles: {
+                        fillColor: [240, 240, 240]
+                    },
+                });
+
+                doc.save('reporte_usuarios_mercadol.pdf');
+            }
+
+            function exportToExcel(users) {
+                const worksheetData = users.map(user => ({
+                    'Nombre': user.nombre_completo || '',
+                    'Numero de WhatsApp': user.whatsapp || '',
+                    'Correo': user.email || '',
+                    'Direccion': user.direccion || '',
+                    'Nombre de la Tienda': user.direccion || '' // Assuming direction contains the store name
+                }));
+
+                const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Usuarios');
+
+                XLSX.writeFile(workbook, 'reporte_usuarios_mercadol.xlsx');
+            }
+
+            btnExportPdf.addEventListener('click', async () => {
+                const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+                const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+                const users = await fetchUsersForExport(startDate, endDate);
+                if (users.length > 0) {
+                    exportToPDF(users);
+                }
+            });
+
+            btnExportExcel.addEventListener('click', async () => {
+                const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+                const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+                const users = await fetchUsersForExport(startDate, endDate);
+                if (users.length > 0) {
+                    exportToExcel(users);
+                }
+            });
         });
     </script>
 </body>
