@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercacol - Encuesta App Tenderos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        input[type="radio"]:checked,
+        input[type="checkbox"]:checked {
+            background-color: #22C55E; /* green-500 */
+            border-color: #16A34A; /* green-700 */
+        }
+        
+        .survey-container {
+            position: relative;
+            min-height: 480px;
+            height: auto;
+            overflow: hidden;
+        }
+
+        .survey-step {
+            width: 100%;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+
+        .step-hidden {
+            opacity: 0;
+            transform: translateX(30px);
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .step-visible {
+            opacity: 1;
+            transform: translateX(0);
+            position: relative;
+        }
+
+        .form-input-glass {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: transparent;
+        }
+        .form-input-glass:focus {
+            --tw-ring-color: #4ade80;
+            border-color: #4ade80;
+        }
+        .form-input-glass option {
+            background-color: #1F2937;
+            color: white;
+        }
+        
+        .form-input-glass-card {
+             background-color: transparent;
+             border: none;
+        }
+        .form-input-glass-card:focus {
+            --tw-ring-color: transparent;
+        }
+
+        .demo-mockup {
+            width: 100%;
+            min-height: 16rem;
+            height: auto;
+            background-color: rgba(31, 41, 55, 0.5);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-gray-900 to-green-900 min-h-screen flex items-center justify-center p-4 text-white">
+
+    <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl max-w-lg w-full overflow-hidden border border-white/20">
+        
+        <header class="p-6 border-b border-white/20 flex items-center space-x-4">
+            <svg class="w-10 h-10 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+            <div>
+                <h1 class="text-2xl font-bold text-white">Mercacol</h1>
+                <p class="text-sm text-green-400">La nueva era para tu tienda</p>
+            </div>
+        </header>
+
+        <div class="w-full bg-white/10 h-2">
+            <div id="progress-bar" class="h-2 bg-green-500 transition-all duration-500" style="width: 0%;"></div>
+        </div>
+
+        <main class="p-8 survey-container">
+            
+            <div id="step-1" class="survey-step step-hidden">
+                <h2 class="text-3xl font-bold mb-4">¡Hola, tendero de Popayán!</h2>
+                <p class="text-gray-200 mb-6">Queremos revolucionar la forma en que surtes tu negocio. Queremos ahorrarte tiempo y dinero con nuestra nueva app.</p>
+                <p class="text-gray-200 mb-8">¿Nos regalas 2 minutos de tu tiempo? Tu opinión es clave.</p>
+            </div>
+            
+            <div id="step-2" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">1. ¿Cómo compras actualmente los productos agrícolas para tu tienda?</h3>
+                <div class="space-y-4">
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="habitos" value="plaza" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Voy personalmente a la central de abastos (Plaza).</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="habitos" value="proveedores" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Tengo proveedores fijos que me visitan.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="habitos" value="telefono" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Hago pedidos por teléfono o WhatsApp.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="habitos" value="otro" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Otro método.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="step-3" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">2. ¿Cuál es tu mayor desafío al comprar?</h3>
+                <div class="space-y-4">
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="desafio" value="tiempo" class="w-5 h-5 accent-green-500">
+                        <span>La pérdida de tiempo (transporte, trancones, buscar).</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="desafio" value="precios" class="w-5 h-5 accent-green-500">
+                        <span>Precios injustos o que cambian mucho.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="desafio" value="calidad" class="w-5 h-5 accent-green-500">
+                        <span>La calidad de los productos no es consistente.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="desafio" value="horarios" class="w-5 h-5 accent-green-500">
+                        <span>Tener que madrugar o ir en horarios difíciles.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="step-4" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">3. ¿En qué comuna o barrio de Popayán está tu tienda?</h3>
+                <p class="text-sm text-gray-300 mb-4">Esto nos ayudará a planificar nuestras rutas de entrega.</p>
+                <select name="ubicacion" class="w-full p-3 rounded-lg border outline-none placeholder-gray-300 text-white form-input-glass ring-1 ring-transparent focus:ring-green-400">
+                    <option value="" disabled selected>Selecciona tu comuna o barrio</option>
+                    <option value="comuna_1">Comuna 1 - Norte</option>
+                    <option value="comuna_2">Comuna 2 - Norte</option>
+                    <option value="comuna_3">Comuna 3 - Occidente</option>
+                    <option value="comuna_4">Comuna 4 - Centro</option>
+                    <option value="comuna_5">Comuna 5 - Sur</option>
+                    <option value="comuna_6">Comuna 6 - Sur-Oriente</option>
+                    <option value="comuna_7">Comuna 7 - Occidente</option>
+                    <option value="comuna_8">Comuna 8 - Sur-Occidente</option>
+                    <option value="comuna_9">Comuna 9 - Sur</option>
+                    <option value="otro_barrio">Otro / Vereda</option>
+                </select>
+            </div>
+
+            <div id="step-5" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">4. Pensando en la logística de Popayán, ¿qué horario de entrega prefieres?</h3>
+                <div class="space-y-4">
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="horario" value="manana_temprano" class="w-5 h-5 accent-green-500">
+                        <span>Temprano en la mañana (6:00 AM - 9:00 AM)</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="horario" value="media_manana" class="w-5 h-5 accent-green-500">
+                        <span>Media mañana (9:00 AM - 12:00 PM)</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="horario" value="tarde" class="w-5 h-5 accent-green-500">
+                        <span>En la tarde (1:00 PM - 4:00 PM)</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="horario" value="indiferente" class="w-5 h-5 accent-green-500">
+                        <span>Me es indiferente mientras cumplan.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="step-6" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">5. Nuestra idea: Una App Mercacol</h3>
+                <p class="text-gray-200 mb-4">Estamos creando una app para que pidas todo desde tu celular, con precios justos y entrega en tu tienda.</p>
+                <p class="text-gray-200 mb-6">Te mostraremos qué tan fácil será. <strong class="text-green-400">¡Sigue los pasos!</strong></p>
+                <div class="demo-mockup">
+                    <div class="w-full max-w-xs bg-gray-900 p-3 rounded-lg shadow-lg">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <svg class="w-6 h-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                            <h4 class="font-bold">Mercacol</h4>
+                        </div>
+                        <div class="w-full h-20 bg-white/10 rounded flex items-center justify-center">
+                            <p class="text-gray-300 text-sm">Tu mercado de confianza</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-7" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 1:</span> Revisa los Precios del Día</h3>
+                <p class="text-gray-200 mb-6">Estos son nuestros precios de hoy. ¡Siempre frescos, siempre justos!</p>
+                <div class="demo-mockup">
+                    <div class="w-full max-w-xs bg-gray-900/80 p-3 rounded-lg shadow-lg flex flex-col">
+                        <h4 class="font-bold text-center mb-2 flex-shrink-0 text-green-400">Precios del Día</h4>
+                        <div id="demo-price-list" class="space-y-1.5 text-sm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-8" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 2:</span> Agrega Productos</h3>
+                <p class="text-gray-200 mb-6">Ahora, simplemente toca los productos que necesitas de la lista.</p>
+                <div class="demo-mockup">
+                    <div class="w-full max-w-xs bg-gray-900 p-3 rounded-lg shadow-lg flex flex-col">
+                        <div id="demo-product-list" class="space-y-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-9" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 3:</span> Selecciona la Cantidad</h3>
+                <p class="text-gray-200 mb-6">Ajusta las libras o kilos que necesites. Sin compliques.</p>
+                <div class="demo-mockup">
+                    <div class="w-full max-w-xs bg-gray-900 p-3 rounded-lg shadow-lg flex flex-col">
+                        <div id="demo-quantity-adjuster" class="space-y-3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-10" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 4:</span> Mira tu Resumen</h3>
+                <p class="text-gray-200 mb-6">Revisas tu pedido y el total en tu carrito. Todo transparente.</p>
+                <div class="demo-mockup">
+                    <div class="w-full max-w-xs bg-gray-900 p-3 rounded-lg shadow-lg flex flex-col">
+                        <h4 class="font-bold text-center mb-2 flex-shrink-0">Tu Pedido</h4>
+                        <div id="demo-summary-list" class="space-y-2 text-sm">
+                        </div>
+                        <hr class="border-white/20 my-2 flex-shrink-0"/>
+                        <div class="w-full flex justify-between items-center text-md flex-shrink-0">
+                            <span class="font-bold">TOTAL:</span>
+                            <span id="demo-summary-total" class="font-bold text-green-400 text-lg">$0</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="btn-demo-summary-confirm" class="w-full mt-6 flex items-center justify-center space-x-2 font-bold py-3 px-8 rounded-full shadow-lg transform transition-all duration-300 bg-green-600 text-white hover:bg-green-700 hover:scale-105 active:scale-95 active:shadow-inner disabled:bg-green-700 disabled:scale-100 disabled:cursor-wait">
+                    <span id="check-icon" class="hidden">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    </span>
+                    <span id="btn-confirm-text">Confirmar Pedido</span>
+                </button>
+            </div>
+
+            <div id="step-11" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 5:</span> Confirma tu Compra</h3>
+                <p class="text-gray-200 mb-6">¡Un clic y listo! Nosotros nos encargamos del resto.</p>
+                <div class="demo-mockup">
+                    <div class="w-full max-w-xs bg-gray-900 p-3 rounded-lg shadow-lg flex flex-col justify-center items-center">
+                        <p class="text-gray-300 text-center mb-4">¿Todo listo para enviar tu pedido?</p>
+                        <button id="btn-demo-confirm" class="w-full font-bold py-3 px-6 rounded-full shadow-lg transform transition-all duration-300 bg-green-500 text-white hover:bg-green-600 hover:scale-105 active:scale-95 active:shadow-inner">
+                            Confirmar y Enviar Pedido
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-12" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 6:</span> ¡Pedido en Camino!</h3>
+                <p class="text-gray-200 mb-6">Recibes tu pedido fresco el mismo día, directo en la puerta de tu tienda.</p>
+                <div class="demo-mockup">
+                    <div class="w-full max-w-xs bg-gray-900 p-3 rounded-lg shadow-lg text-center">
+                        <svg class="w-20 h-20 text-green-400 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h4 class="font-bold text-lg">¡Pedido Confirmado!</h4>
+                        <p class="text-gray-300 text-sm mt-1">Llega hoy antes de las 2:00 PM</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="step-13" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">6. ¿Qué te pareció este flujo?</h3>
+                <p class="text-gray-200 mb-6">Viendo lo fácil que sería, ¿qué tan útil te parecería esta solución?</p>
+                <div class="space-y-4">
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="utilidad" value="muy_util" class="w-5 h-5 accent-green-500">
+                        <span>Muy útil, me ahorraría mucho trabajo.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="utilidad" value="util" class="w-5 h-5 accent-green-500">
+                        <span>Suena bien, la probaría.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="utilidad" value="dudas" class="w-5 h-5 accent-green-500">
+                        <span>Tengo dudas, necesitaría mejorar algo.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="utilidad" value="no_util" class="w-5 h-5 accent-green-500">
+                        <span>No creo que la usaría.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="step-14" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">7. ¿Qué sería lo MÁS importante para ti en la app final?</h3>
+                <p class="text-sm text-gray-300 mb-4">(Elige hasta 3)</p>
+                <div class="space-y-4">
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="importante" value="precio_justo" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Que los precios sean realmente justos y transparentes.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="importante" value="entrega" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Que la entrega sea rápida y el mismo día.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="importante" value="calidad" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Poder confiar 100% en la frescura y calidad del producto.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="importante" value="facil" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Que sea súper fácil de usar (como en el demo).</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="importante" value="promos" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Promociones y descuentos especiales.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="step-15" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">8. Además de comprar, ¿qué otra función te gustaría tener en la app?</h3>
+                <p class="text-sm text-gray-300 mb-4">(Elige las que quieras)</p>
+                <div class="space-y-4">
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="funciones" value="credito" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Poder comprar a crédito (fiar).</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="funciones" value="inventario" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Herramientas para controlar mi inventario.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="funciones" value="promos_push" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Alertas de promociones y "gangas" del día.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="checkbox" name="funciones" value="soporte" class="w-5 h-5 accent-green-500 rounded">
+                        <span>Un chat de soporte rápido por si algo sale mal.</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div id="step-16" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">9. ¡Ya casi terminamos!</h3>
+                <p class="text-gray-200 mb-6">Déjanos tu contacto para ser de los primeros en probar la app y recibir un <strong class="text-green-400">bono de bienvenida</strong>.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white/10 p-4 rounded-lg flex items-start space-x-4 md:col-span-2">
+                        <svg class="w-6 h-6 text-green-400 mt-1 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                        <div>
+                            <label for="nombre_completo" class="text-sm font-semibold text-gray-300">Nombre completo</label>
+                            <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Ej: Ana María Pérez" class="w-full p-2 outline-none placeholder-gray-400 text-white form-input-glass-card">
+                        </div>
+                    </div>
+                     <div class="bg-white/10 p-4 rounded-lg flex items-start space-x-4">
+                         <svg class="w-6 h-6 text-green-400 mt-1 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
+                        <div>
+                            <label for="whatsapp" class="text-sm font-semibold text-gray-300">WhatsApp</label>
+                            <input type="tel" id="whatsapp" name="whatsapp" placeholder="300 123 4567" class="w-full p-2 outline-none placeholder-gray-400 text-white form-input-glass-card">
+                        </div>
+                    </div>
+                     <div class="bg-white/10 p-4 rounded-lg flex items-start space-x-4">
+                        <svg class="w-6 h-6 text-green-400 mt-1 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                        <div>
+                            <label for="email" class="text-sm font-semibold text-gray-300">Correo (Opcional)</label>
+                            <input type="email" id="email" name="email" placeholder="tu.correo@email.com" class="w-full p-2 outline-none placeholder-gray-400 text-white form-input-glass-card">
+                        </div>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-lg flex items-start space-x-4 md:col-span-2">
+                        <svg class="w-6 h-6 text-green-400 mt-1 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h2.64m-13.5 0L12 14.25m-2.64 0L5.25 21m13.5 0L12 14.25m-2.64 0L5.25 21m13.5 0L12 14.25" /></svg>
+                        <div>
+                            <label for="direccion" class="text-sm font-semibold text-gray-300">Nombre o dirección de tu tienda</label>
+                            <input type="text" id="direccion" name="direccion" placeholder="Ej: Tienda La Esquina" class="w-full p-2 outline-none placeholder-gray-400 text-white form-input-glass-card">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-17" class="survey-step step-hidden">
+                <div class="text-center">
+                    <svg class="w-16 h-16 text-green-400 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h2 class="text-3xl font-bold mb-4">¡Mil gracias!</h2>
+                    <p class="text-gray-200 mb-6">Tu opinión es oro para nosotros. Estamos construyendo el futuro de Mercacol para tenderos como tú.</p>
+                    <p class="text-gray-200">Pronto nos pondremos en contacto. ¡Prepárate para la revolución agrícola en Popayán!</p>
+                </div>
+            </div>
+
+        </main>
+
+        <footer id="nav-buttons" class="p-6 border-t border-white/20 flex justify-between items-center">
+            <button id="btn-prev" class="font-bold py-3 px-6 rounded-full shadow-lg transform transition-all duration-300 bg-transparent text-gray-300 hover:text-white">
+                Anterior
+            </button>
+            <button id="btn-next" class="font-bold py-3 px-6 rounded-full shadow-lg transform transition-all duration-300 bg-green-500 text-white hover:bg-green-600 hover:scale-105 active:scale-95 active:shadow-inner">
+                Siguiente
+            </button>
+            <button id="btn-finish" class="hidden font-bold py-3 px-6 rounded-full shadow-lg transform transition-all duration-300 bg-green-500 text-white hover:bg-green-600 hover:scale-105 active:scale-95 active:shadow-inner">
+                Finalizar y Enviar
+            </button>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const steps = document.querySelectorAll('.survey-step');
+            const totalSteps = steps.length;
+            let currentStep = 1;
+            
+            const progressBar = document.getElementById('progress-bar');
+            const btnNext = document.getElementById('btn-next');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnFinish = document.getElementById('btn-finish');
+            const navButtons = document.getElementById('nav-buttons');
+            const surveyData = {};
+
+            const productCatalog = [
+                { id: 'tomate', name: 'Tomate Chonto', pricePerKg: 3500 },
+                { id: 'papa', name: 'Papa Pastusa', pricePerKg: 2000 },
+                { id: 'cebolla', name: 'Cebolla Cabezona', pricePerKg: 2500 },
+                { id: 'aguacate', name: 'Aguacate Hass', pricePerKg: 6000, offer: 15 },
+                { id: 'zanahoria', name: 'Zanahoria', pricePerKg: 1800 },
+                { id: 'platano', name: 'Plátano Verde', pricePerKg: 2200 }
+            ];
+            let cart = {}; 
+
+            const productListContainer = document.getElementById('demo-product-list');
+            const quantityAdjusterContainer = document.getElementById('demo-quantity-adjuster');
+            const summaryListContainer = document.getElementById('demo-summary-list');
+            const summaryTotalEl = document.getElementById('demo-summary-total');
+            const priceListContainer = document.getElementById('demo-price-list');
+            
+            const btnDemoConfirm = document.getElementById('btn-demo-confirm');
+            const btnDemoSummaryConfirm = document.getElementById('btn-demo-summary-confirm');
+            const checkIcon = document.getElementById('check-icon');
+            const btnConfirmText = document.getElementById('btn-confirm-text');
+
+            function formatCurrency(value) {
+                return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+            }
+
+            function renderProductList() {
+                if (!productListContainer) return;
+                productListContainer.innerHTML = '';
+                productCatalog.forEach(product => {
+                    const isSelected = cart.hasOwnProperty(product.id);
+                    const selectedClasses = isSelected ? 'ring-2 ring-green-500 shadow-lg' : '';
+                    productListContainer.innerHTML += `
+                        <div class="product-item w-full h-10 bg-white/20 rounded flex items-center justify-between px-3 cursor-pointer hover:bg-white/30 ${selectedClasses}" data-product-id="${product.id}">
+                            <span class="text-sm">${product.name}</span>
+                            <span class="text-green-400 font-bold">${isSelected ? '✓' : '+'}</span>
+                        </div>
+                    `;
+                });
+            }
+            
+            function renderQuantityAdjuster() {
+                if (!quantityAdjusterContainer) return;
+                quantityAdjusterContainer.innerHTML = '';
+                const cartItems = Object.keys(cart);
+
+                if (cartItems.length === 0) {
+                    quantityAdjusterContainer.innerHTML = `<p class="text-gray-400 text-center m-auto">No has agregado productos.<br>Vuelve al paso anterior para seleccionarlos.</p>`;
+                    return;
+                }
+
+                cartItems.forEach(productId => {
+                    const product = productCatalog.find(p => p.id === productId);
+                    const cartItem = cart[productId];
+                    quantityAdjusterContainer.innerHTML += `
+                        <div class="bg-white/10 p-3 rounded-lg">
+                            <h5 class="font-semibold text-center mb-2">${product.name}</h5>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <button class="btn-minus w-8 h-8 rounded-full bg-white/20 text-green-400 text-2xl font-bold flex items-center justify-center" data-product-id="${product.id}">-</button>
+                                    <span class="text-2xl font-bold w-12 text-center">${cartItem.quantity}</span>
+                                    <button class="btn-plus w-8 h-8 rounded-full bg-green-500 text-white text-2xl font-bold flex items-center justify-center" data-product-id="${product.id}">+</button>
+                                </div>
+                                <select class="unit-selector bg-gray-700 text-white border-none rounded-md p-1 text-sm focus:ring-green-500" data-product-id="${product.id}">
+                                    <option value="kg" ${cartItem.unit === 'kg' ? 'selected' : ''}>Kilos</option>
+                                    <option value="lb" ${cartItem.unit === 'lb' ? 'selected' : ''}>Libras</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            function renderPriceList() {
+                if (!priceListContainer) return;
+                priceListContainer.innerHTML = '';
+                productCatalog.forEach(product => {
+                    // Etiqueta de oferta rediseñada
+                    const offerTag = product.offer 
+                        ? `<div class="bg-green-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full mb-1">${product.offer}% OFF</div>`
+                        : '';
+
+                    priceListContainer.innerHTML += `
+                        <div class="w-full flex justify-between items-center bg-white/5 p-2 rounded">
+                            <div>
+                                ${offerTag}
+                                <span>${product.name}</span>
+                            </div>
+                            <span class="font-medium text-green-300">${formatCurrency(product.pricePerKg)}/kg</span>
+                        </div>
+                    `;
+                });
+            }
+
+            function renderSummary() {
+                if (!summaryListContainer || !summaryTotalEl) return;
+                summaryListContainer.innerHTML = '';
+                let total = 0;
+                const cartItems = Object.keys(cart);
+
+                if (cartItems.length === 0) {
+                     summaryListContainer.innerHTML = `<p class="text-gray-400 text-center m-auto">Tu carrito está vacío.</p>`;
+                } else {
+                    cartItems.forEach(productId => {
+                        const product = productCatalog.find(p => p.id === productId);
+                        const cartItem = cart[productId];
+                        let price = (cartItem.unit === 'kg') 
+                            ? cartItem.quantity * product.pricePerKg 
+                            : cartItem.quantity * (product.pricePerKg / 2.20462);
+                        
+                        if (product.offer) {
+                            price *= (1 - product.offer / 100);
+                        }
+                        
+                        total += price;
+
+                        summaryListContainer.innerHTML += `
+                            <div class="w-full bg-white/10 rounded flex justify-between p-2">
+                                <span>${cartItem.quantity} ${cartItem.unit === 'kg' ? 'Kg' : 'Lb'} ${product.name}</span>
+                                <span class="font-medium">${formatCurrency(price)}</span>
+                            </div>
+                        `;
+                    });
+                }
+                summaryTotalEl.textContent = formatCurrency(total);
+            }
+            
+            function renderAllDemoParts() {
+                renderProductList(); 
+                renderQuantityAdjuster();
+                renderSummary();
+                renderPriceList();
+            }
+
+            if (productListContainer) {
+                productListContainer.addEventListener('click', (e) => {
+                    const productItem = e.target.closest('.product-item');
+                    if (!productItem) return;
+                    const productId = productItem.dataset.productId;
+                    if (cart.hasOwnProperty(productId)) {
+                        delete cart[productId];
+                    } else {
+                        cart[productId] = { quantity: 1, unit: 'kg' };
+                    }
+                    renderAllDemoParts();
+                });
+            }
+
+            if (quantityAdjusterContainer) {
+                quantityAdjusterContainer.addEventListener('click', (e) => {
+                    const target = e.target;
+                    const productId = target.dataset.productId;
+                    if (!productId || !cart[productId]) return;
+                    if (target.classList.contains('btn-plus')) {
+                        cart[productId].quantity++;
+                    }
+                    if (target.classList.contains('btn-minus')) {
+                        cart[productId].quantity = Math.max(1, cart[productId].quantity - 1);
+                    }
+                    renderAllDemoParts();
+                });
+
+                quantityAdjusterContainer.addEventListener('change', (e) => {
+                    const target = e.target;
+                    if (target.classList.contains('unit-selector')) {
+                        const productId = target.dataset.productId;
+                        if (productId && cart[productId]) {
+                            cart[productId].unit = target.value;
+                            renderAllDemoParts();
+                        }
+                    }
+                });
+            }
+
+            const advanceToNextStep = () => {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            };
+
+            if(btnDemoSummaryConfirm) {
+                btnDemoSummaryConfirm.addEventListener('click', () => {
+                    btnDemoSummaryConfirm.disabled = true;
+                    checkIcon.classList.remove('hidden');
+                    btnConfirmText.textContent = 'Pedido Confirmado';
+                    setTimeout(advanceToNextStep, 800); 
+                });
+            }
+            
+            if(btnDemoConfirm) {
+                btnDemoConfirm.addEventListener('click', advanceToNextStep);
+            }
+
+            function showStep(stepNum) {
+                steps.forEach((step, index) => {
+                    const stepElement = document.getElementById(`step-${index + 1}`);
+                    if (!stepElement) return;
+                    if ((index + 1) === stepNum) {
+                        stepElement.classList.add('step-visible');
+                        stepElement.classList.remove('step-hidden');
+                    } else {
+                        stepElement.classList.remove('step-visible');
+                        stepElement.classList.add('step-hidden');
+                    }
+                });
+                
+                // El paso de resumen ahora es el 10
+                if (stepNum !== 10 && btnDemoSummaryConfirm) {
+                    btnDemoSummaryConfirm.disabled = false;
+                    checkIcon.classList.add('hidden');
+                    btnConfirmText.textContent = 'Confirmar Pedido';
+                }
+
+                const progress = ((stepNum - 1) / (totalSteps - 1)) * 100;
+                progressBar.style.width = `${progress}%`;
+
+                btnPrev.classList.toggle('hidden', stepNum === 1);
+                
+                const hideNextButtonSteps = [10, 11, totalSteps - 1, totalSteps]; 
+                btnNext.classList.toggle('hidden', hideNextButtonSteps.includes(stepNum));
+                
+                btnFinish.classList.toggle('hidden', stepNum !== totalSteps - 1);
+                navButtons.classList.toggle('hidden', stepNum === totalSteps);
+                
+                // El demo ahora va del paso 7 al 12
+                if (stepNum >= 7 && stepNum <= 12) {
+                    renderAllDemoParts();
+                }
+            }
+
+            function collectStepData(stepNum) {
+                const stepElement = document.getElementById(`step-${stepNum}`);
+                if (!stepElement) return;
+                const inputs = stepElement.querySelectorAll('input[name], textarea[name], select[name]');
+                inputs.forEach(input => {
+                    const name = input.name;
+                    if (!name) return;
+                    if (input.type === 'radio') {
+                        if (input.checked) { surveyData[name] = input.value; }
+                    } else if (input.type === 'checkbox') {
+                        if (!surveyData[name]) { surveyData[name] = []; }
+                        if (input.checked) {
+                            if (!surveyData[name].includes(input.value)) { surveyData[name].push(input.value); }
+                        } else {
+                            const index = surveyData[name].indexOf(input.value);
+                            if (index > -1) { surveyData[name].splice(index, 1); }
+                        }
+                    } else {
+                        surveyData[name] = input.value;
+                    }
+                });
+            }
+
+            btnNext.addEventListener('click', () => {
+                collectStepData(currentStep);
+                advanceToNextStep();
+            });
+
+            btnPrev.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    currentStep--;
+                    showStep(currentStep);
+                }
+            });
+
+            btnFinish.addEventListener('click', () => {
+                collectStepData(currentStep);
+                surveyData['pedido_demo'] = cart;
+                console.log("Encuesta completada. Datos:", surveyData);
+                advanceToNextStep();
+            });
+
+            showStep(1);
+            renderAllDemoParts();
+        });
+    </script>
+</body>
+</html>
