@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mercacol - Encuesta App Tenderos</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -81,11 +85,53 @@
             padding: 1rem;
             box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
         }
+
+        .timeline-item {
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .timeline-icon {
+            transition: background-color 0.3s;
+        }
+
+        .timeline-item svg {
+            transition: color 0.3s;
+        }
+
+        .timeline-connector {
+            position: relative;
+        }
+        .timeline-connector::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background-color: #22C55E; /* green-500 */
+            transition: width 0.5s ease-in-out;
+        }
+        .timeline-connector.completed::after {
+            width: 100%;
+        }
+
+        .timeline-node, .timeline-label {
+            transition: all 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .view-section {
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-purple-900 via-gray-900 to-green-900 min-h-screen flex items-center justify-center p-4 text-white">
 
-    <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl max-w-lg w-full overflow-hidden border border-white/20">
+    <div id="survey-wrapper" class="view-section bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl max-w-lg w-full overflow-hidden border border-white/20">
         
         <header class="p-6 border-b border-white/20 flex items-center space-x-4">
             <svg class="w-10 h-10 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -284,14 +330,10 @@
 
             <div id="step-12" class="survey-step step-hidden">
                 <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 6:</span> ¡Pedido en Camino!</h3>
-                <p class="text-gray-200 mb-6">Recibes tu pedido fresco el mismo día, directo en la puerta de tu tienda.</p>
+                <p class="text-gray-200 mb-6">Así es como verás el estado de tu pedido en tiempo real.</p>
                 <div class="demo-mockup">
-                    <div class="w-full max-w-xs bg-gray-900 p-3 rounded-lg shadow-lg text-center">
-                        <svg class="w-20 h-20 text-green-400 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <h4 class="font-bold text-lg">¡Pedido Confirmado!</h4>
-                        <p class="text-gray-300 text-sm mt-1">Llega hoy antes de las 2:00 PM</p>
+                    <div id="timeline-container-horizontal" class="w-full max-w-md bg-gray-900 p-6 rounded-lg shadow-lg">
+
                     </div>
                 </div>
             </div>
@@ -390,8 +432,15 @@
                      <div class="bg-white/10 p-4 rounded-lg flex items-start space-x-4">
                         <svg class="w-6 h-6 text-green-400 mt-1 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                         <div>
-                            <label for="email" class="text-sm font-semibold text-gray-300">Correo (Opcional)</label>
-                            <input type="email" id="email" name="email" placeholder="tu.correo@email.com" class="w-full p-2 outline-none placeholder-gray-400 text-white form-input-glass-card">
+                            <label for="email" class="text-sm font-semibold text-gray-300">Correo Electrónico</label>
+                            <input type="email" id="email" name="email" placeholder="tu.correo@email.com" class="w-full p-2 outline-none placeholder-gray-400 text-white form-input-glass-card" required>
+                        </div>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-lg flex items-start space-x-4">
+                        <svg class="w-6 h-6 text-green-400 mt-1 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+                        <div>
+                            <label for="password" class="text-sm font-semibold text-gray-300">Contraseña</label>
+                            <input type="password" id="password" name="password" placeholder="Mínimo 6 caracteres" class="w-full p-2 outline-none placeholder-gray-400 text-white form-input-glass-card" required>
                         </div>
                     </div>
                     <div class="bg-white/10 p-4 rounded-lg flex items-start space-x-4 md:col-span-2">
@@ -430,8 +479,125 @@
         </footer>
     </div>
 
+    <!-- History Section -->
+    <div id="history-section" class="hidden view-section bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl max-w-lg w-full overflow-hidden border border-white/20">
+        <header class="p-6 border-b border-white/20 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Historial de Pedidos</h1>
+                    <p class="text-sm text-green-400">Usuarios registrados</p>
+                </div>
+            </div>
+        </header>
+        <main class="p-8" style="max-height: 70vh; overflow-y: auto;">
+            <div id="user-list-container" class="space-y-4">
+                <!-- User cards will be injected here by JavaScript -->
+                <p class="text-center text-gray-300">Aún no hay usuarios registrados.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-lg p-4 z-50">
+        <div class="bg-gray-900/80 backdrop-blur-xl rounded-full shadow-2xl border border-white/20 flex justify-center items-center max-w-xs mx-auto">
+            <button id="history-toggle-button" class="p-3 rounded-full text-green-400 hover:bg-green-500/20 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-110">
+                <svg id="cart-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <svg id="close-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Survey Navigation Logic
+            const surveyWrapper = document.getElementById('survey-wrapper');
+            const historySection = document.getElementById('history-section');
+            const historyToggleButton = document.getElementById('history-toggle-button');
+            const cartIcon = document.getElementById('cart-icon');
+            const closeIcon = document.getElementById('close-icon');
+
+            historyToggleButton.addEventListener('click', () => {
+                const isHistoryVisible = !historySection.classList.contains('hidden');
+
+                // Remove animation class to reset it
+                surveyWrapper.classList.remove('view-section');
+                historySection.classList.remove('view-section');
+
+                // Force a reflow to make sure the class removal is registered
+                void surveyWrapper.offsetWidth;
+                void historySection.offsetWidth;
+
+                if (isHistoryVisible) {
+                    // Show survey, hide history
+                    surveyWrapper.classList.remove('hidden');
+                    historySection.classList.add('hidden');
+                    surveyWrapper.classList.add('view-section');
+                } else {
+                    // Show history, hide survey
+                    surveyWrapper.classList.add('hidden');
+                    historySection.classList.remove('hidden');
+                    historySection.classList.add('view-section');
+                }
+
+                cartIcon.classList.toggle('hidden', !isHistoryVisible);
+                if (!isHistoryVisible) {
+                    displayUsers(); // Fetch and display users when opening history
+                }
+                closeIcon.classList.toggle('hidden', isHistoryVisible);
+            });
+
+            async function displayUsers() {
+                const userListContainer = document.getElementById('user-list-container');
+                userListContainer.innerHTML = '<p class="text-center text-gray-300">Cargando usuarios...</p>';
+
+                try {
+                    const querySnapshot = await db.collection('users').get();
+                    if (querySnapshot.empty) {
+                        userListContainer.innerHTML = '<p class="text-center text-gray-300">Aún no hay usuarios registrados.</p>';
+                        return;
+                    }
+
+                    let usersHtml = '';
+                    querySnapshot.forEach(doc => {
+                        const userData = doc.data();
+                        usersHtml += `
+                            <div class="bg-white/5 p-4 rounded-lg border border-white/10 shadow-md">
+                                <h4 class="text-lg font-bold text-green-400">${userData.nombre_completo || 'Usuario sin nombre'}</h4>
+                                <p class="text-sm text-gray-300">${userData.direccion || 'Sin tienda registrada'}</p>
+                                <p class="text-sm text-gray-300 mt-1">WhatsApp: ${userData.whatsapp || 'No proporcionado'}</p>
+                            </div>
+                        `;
+                    });
+                    userListContainer.innerHTML = usersHtml;
+
+                } catch (error) {
+                    console.error("Error al obtener los usuarios:", error);
+                    userListContainer.innerHTML = '<p class="text-center text-red-400">Error al cargar los usuarios. Inténtalo de nuevo.</p>';
+                }
+            }
+
+            // Firebase Initialization
+            const firebaseConfig = {
+                apiKey: "AIzaSyDSbbkoLdJyX2Ln3GHMkJPE1k3cC9u0Lcw",
+                authDomain: "mercacol-448b8.firebaseapp.com",
+                projectId: "mercacol-448b8",
+                storageBucket: "mercacol-448b8.firebasestorage.app",
+                messagingSenderId: "350139377581",
+                appId: "1:350139377581:web:1f651cb55c8fb69ba3a324"
+            };
+
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const db = firebase.firestore();
+
+            // Existing Survey Logic
             const steps = document.querySelectorAll('.survey-step');
             const totalSteps = steps.length;
             let currentStep = 1;
@@ -671,6 +837,10 @@
                 if (stepNum >= 7 && stepNum <= 12) {
                     renderAllDemoParts();
                 }
+
+                if (stepNum === 12) {
+                    startHorizontalTimelineAnimation();
+                }
             }
 
             function collectStepData(stepNum) {
@@ -708,12 +878,111 @@
                 }
             });
 
-            btnFinish.addEventListener('click', () => {
+            btnFinish.addEventListener('click', async (e) => {
+                e.preventDefault();
                 collectStepData(currentStep);
                 surveyData['pedido_demo'] = cart;
-                console.log("Encuesta completada. Datos:", surveyData);
-                advanceToNextStep();
+
+                const email = surveyData['email'];
+                const password = surveyData['password'];
+
+                if (!email || !password || password.length < 6) {
+                    alert("Por favor, proporciona un correo electrónico válido y una contraseña de al menos 6 caracteres.");
+                    return;
+                }
+
+                try {
+                    // Create user in Firebase Auth
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    const user = userCredential.user;
+
+                    // Save survey data to Firestore
+                    // We remove the password from the data to be saved for security
+                    const dataToSave = { ...surveyData };
+                    delete dataToSave.password;
+
+                    await db.collection('users').doc(user.uid).set(dataToSave);
+
+                    console.log("Usuario registrado y datos guardados exitosamente!");
+                    alert("¡Registro exitoso! Gracias por completar la encuesta.");
+
+                    advanceToNextStep();
+
+                } catch (error) {
+                    console.error("Error durante el registro:", error);
+                    alert(`Hubo un error durante el registro: ${error.message}`);
+                }
             });
+
+            function startHorizontalTimelineAnimation() {
+                const container = document.getElementById('timeline-container-horizontal');
+                if (!container) return;
+
+                const timelineItems = [
+                    { text: 'Preparando', icon: 'M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z' },
+                    { text: 'En Ruta', icon: 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H3.375A2.25 2.25 0 001.125 6.75v10.5a2.25 2.25 0 002.25 2.25z' },
+                    { text: 'Llega Hoy', icon: 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z' },
+                    { text: 'Entregado', icon: 'M4.5 12.75l6 6 9-13.5' }
+                ];
+
+                // Responsive Classes
+                const nodeSize = "w-8 h-8 sm:w-10 sm:h-10";
+                const iconSize = "w-4 h-4 sm:w-5 sm:h-5";
+                const textSize = "text-[10px] sm:text-xs";
+
+                let html = `
+                    <div class="relative w-full">
+                        <!-- Progress Bar -->
+                        <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-700" style="transform: translateY(-50%);">
+                            <div id="timeline-progress" class="h-full bg-green-500 transition-all duration-1000 ease-out" style="width: 0%;"></div>
+                        </div>
+
+                        <!-- Nodes and Labels -->
+                        <div class="relative flex justify-between items-start">
+                `;
+
+                timelineItems.forEach((item, index) => {
+                    html += `
+                        <div class="timeline-step flex flex-col items-center text-center z-10" style="flex-basis: 25%;">
+                            <div class="timeline-node ${nodeSize} rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-900 transition-all duration-500">
+                                 <svg class="${iconSize} text-gray-400 transition-all duration-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="${item.icon}" /></svg>
+                            </div>
+                            <p class="timeline-label ${textSize} font-semibold mt-2 text-gray-400 transition-all duration-500">${item.text}</p>
+                        </div>
+                    `;
+                });
+                html += '</div></div>';
+                container.innerHTML = html;
+
+                setTimeout(() => {
+                    const nodes = container.querySelectorAll('.timeline-node');
+                    const labels = container.querySelectorAll('.timeline-label');
+                    const progress = document.getElementById('timeline-progress');
+                    const totalSteps = nodes.length - 1;
+
+                    let currentStep = 0;
+                    const animateStep = () => {
+                        if (currentStep >= nodes.length) return;
+
+                        // Animate node and label
+                        const node = nodes[currentStep];
+                        node.classList.remove('bg-gray-700');
+                        node.classList.add('bg-green-500');
+                        node.querySelector('svg').classList.remove('text-gray-400');
+                        node.querySelector('svg').classList.add('text-white');
+                        labels[currentStep].classList.remove('text-gray-400');
+                        labels[currentStep].classList.add('text-white');
+
+                        // Animate progress bar
+                        const progressPercentage = (currentStep / totalSteps) * 100;
+                        progress.style.width = `${progressPercentage}%`;
+
+                        currentStep++;
+                        setTimeout(animateStep, 800);
+                    };
+                    animateStep();
+                }, 100);
+            }
 
             showStep(1);
             renderAllDemoParts();
