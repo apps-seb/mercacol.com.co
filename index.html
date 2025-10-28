@@ -81,6 +81,39 @@
             padding: 1rem;
             box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
         }
+
+        .timeline-item {
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .timeline-icon {
+            transition: background-color 0.3s;
+        }
+
+        .timeline-item svg {
+            transition: color 0.3s;
+        }
+
+        .timeline-connector {
+            position: relative;
+        }
+        .timeline-connector::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background-color: #22C55E; /* green-500 */
+            transition: width 0.5s ease-in-out;
+        }
+        .timeline-connector.completed::after {
+            width: 100%;
+        }
+
+        .timeline-node, .timeline-label {
+            transition: all 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-purple-900 via-gray-900 to-green-900 min-h-screen flex items-center justify-center p-4 text-white">
@@ -284,14 +317,10 @@
 
             <div id="step-12" class="survey-step step-hidden">
                 <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 6:</span> ¡Pedido en Camino!</h3>
-                <p class="text-gray-200 mb-6">Recibes tu pedido fresco el mismo día, directo en la puerta de tu tienda.</p>
+                <p class="text-gray-200 mb-6">Así es como verás el estado de tu pedido en tiempo real.</p>
                 <div class="demo-mockup">
-                    <div class="w-full max-w-xs bg-gray-900 p-3 rounded-lg shadow-lg text-center">
-                        <svg class="w-20 h-20 text-green-400 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <h4 class="font-bold text-lg">¡Pedido Confirmado!</h4>
-                        <p class="text-gray-300 text-sm mt-1">Llega hoy antes de las 2:00 PM</p>
+                    <div id="timeline-container-horizontal" class="w-full max-w-md bg-gray-900 p-6 rounded-lg shadow-lg">
+                        
                     </div>
                 </div>
             </div>
@@ -671,6 +700,10 @@
                 if (stepNum >= 7 && stepNum <= 12) {
                     renderAllDemoParts();
                 }
+
+                if (stepNum === 12) {
+                    startHorizontalTimelineAnimation();
+                }
             }
 
             function collectStepData(stepNum) {
@@ -714,6 +747,76 @@
                 console.log("Encuesta completada. Datos:", surveyData);
                 advanceToNextStep();
             });
+
+            function startHorizontalTimelineAnimation() {
+                const container = document.getElementById('timeline-container-horizontal');
+                if (!container) return;
+
+                const timelineItems = [
+                    { text: 'Preparando', icon: 'M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z' },
+                    { text: 'En Ruta', icon: 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H3.375A2.25 2.25 0 001.125 6.75v10.5a2.25 2.25 0 002.25 2.25z' },
+                    { text: 'Llega Hoy', icon: 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z' },
+                    { text: 'Entregado', icon: 'M4.5 12.75l6 6 9-13.5' }
+                ];
+
+                // Responsive Classes
+                const nodeSize = "w-8 h-8 sm:w-10 sm:h-10";
+                const iconSize = "w-4 h-4 sm:w-5 sm:h-5";
+                const textSize = "text-[10px] sm:text-xs";
+
+                let html = `
+                    <div class="relative w-full">
+                        <!-- Progress Bar -->
+                        <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-700" style="transform: translateY(-50%);">
+                            <div id="timeline-progress" class="h-full bg-green-500 transition-all duration-1000 ease-out" style="width: 0%;"></div>
+                        </div>
+                        
+                        <!-- Nodes and Labels -->
+                        <div class="relative flex justify-between items-start">
+                `;
+
+                timelineItems.forEach((item, index) => {
+                    html += `
+                        <div class="timeline-step flex flex-col items-center text-center z-10" style="flex-basis: 25%;">
+                            <div class="timeline-node ${nodeSize} rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-900 transition-all duration-500">
+                                 <svg class="${iconSize} text-gray-400 transition-all duration-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="${item.icon}" /></svg>
+                            </div>
+                            <p class="timeline-label ${textSize} font-semibold mt-2 text-gray-400 transition-all duration-500">${item.text}</p>
+                        </div>
+                    `;
+                });
+                html += '</div></div>';
+                container.innerHTML = html;
+
+                setTimeout(() => {
+                    const nodes = container.querySelectorAll('.timeline-node');
+                    const labels = container.querySelectorAll('.timeline-label');
+                    const progress = document.getElementById('timeline-progress');
+                    const totalSteps = nodes.length - 1;
+
+                    let currentStep = 0;
+                    const animateStep = () => {
+                        if (currentStep >= nodes.length) return;
+
+                        // Animate node and label
+                        const node = nodes[currentStep];
+                        node.classList.remove('bg-gray-700');
+                        node.classList.add('bg-green-500');
+                        node.querySelector('svg').classList.remove('text-gray-400');
+                        node.querySelector('svg').classList.add('text-white');
+                        labels[currentStep].classList.remove('text-gray-400');
+                        labels[currentStep].classList.add('text-white');
+                        
+                        // Animate progress bar
+                        const progressPercentage = (currentStep / totalSteps) * 100;
+                        progress.style.width = `${progressPercentage}%`;
+
+                        currentStep++;
+                        setTimeout(animateStep, 800);
+                    };
+                    animateStep(); 
+                }, 100);
+            }
 
             showStep(1);
             renderAllDemoParts();
