@@ -195,9 +195,9 @@
         }
         .timeline-connector {
             position: absolute;
-            top: calc(1.25rem - 1px); /* center vertically with the node */
-            right: 50%;
-            width: 100%;
+            top: 2.5rem; /* Positioned at the bottom of the node */
+            left: 50%;
+            width: calc(100% - 2.5rem); /* Adjust width to connect nodes */
             height: 2px;
             background-color: #4B5563; /* gray-600 */
             z-index: 5;
@@ -208,7 +208,7 @@
             left: 0;
             width: 0%;
             height: 100%;
-            background-image: linear-gradient(to right, #16A34A, #22C55E, #4ADE80);
+            background-color: #22C55E; /* green-500, solid color */
             transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 9999px;
         }
@@ -1412,7 +1412,6 @@
                         if (currentStep >= timelineItems.length) {
                             // After the last step, show the delivery time
                             const deliveryTime = new Date();
-                            deliveryTime.setHours(deliveryTime.getHours() + 1);
                             const formattedTime = deliveryTime.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
 
                             deliveryTimeContainer.innerHTML = `
