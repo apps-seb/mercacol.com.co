@@ -136,84 +136,90 @@
         }
 
         /* New Horizontal Timeline CSS */
+        .timeline-horizontal-container-wrapper {
+            position: relative;
+            width: 100%;
+            height: 80px; /* Provide enough space for node and label */
+            display: flex;
+            align-items: center;
+        }
+        .timeline-line {
+            position: absolute;
+            top: 2.25rem; /* Align with bottom of the node */
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background-color: #4B5563; /* gray-600 */
+            border-radius: 2px;
+            z-index: 1;
+        }
+        #timeline-progress-line {
+            position: absolute;
+            top: 2.25rem;
+            left: 10%;
+            height: 4px;
+            width: 0%; /* Animated by JS */
+            background-color: #22C55E; /* green-500 */
+            border-radius: 2px;
+            z-index: 2;
+            transition: width 0.5s ease-in-out;
+        }
         .timeline-horizontal-container {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            padding: 1rem 0;
             width: 100%;
+            position: relative;
+            z-index: 3;
         }
         .timeline-horizontal-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            flex: 1 1 0px;
-            position: relative;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            flex: 1;
         }
         .timeline-node {
             width: 2.5rem; /* 40px */
             height: 2.5rem; /* 40px */
             border-radius: 9999px;
-            background-color: transparent;
+            background-color: #1F2937;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid #4B5563; /* gray-600 */
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 10;
+            border: 2px solid #4B5563;
+            transition: all 0.3s ease-in-out;
+            transform: scale(0.8);
+            opacity: 0.5;
         }
         .timeline-node.active {
-            background-color: #22C55E; /* green-500 */
+            background-color: #22C55E;
             border-color: #22C55E;
             transform: scale(1.1);
+            opacity: 1;
             box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
         }
         .timeline-node svg {
             width: 1.25rem;
             height: 1.25rem;
-            color: #6B7280; /* gray-500 */
-            transition: color 0.4s ease;
+            color: #6B7280;
+            transition: color 0.3s ease;
         }
         .timeline-node.active svg {
             color: white;
         }
         .timeline-label {
             margin-top: 0.75rem;
-            font-size: 0.75rem; /* 12px */
-            line-height: 1rem; /* 16px */
+            font-size: 0.75rem;
             text-align: center;
-            width: 5rem; /* 80px */
-            color: #9CA3AF; /* gray-400 */
-            transition: color 0.4s ease;
+            color: #9CA3AF;
+            transition: all 0.3s ease-in-out;
+            opacity: 0;
+            transform: translateY(10px);
         }
         .timeline-label.active {
             color: white;
             font-weight: 700;
-        }
-        .timeline-connector {
-            position: absolute;
-            top: 2.5rem; /* Positioned at the bottom of the node */
-            left: 50%;
-            width: calc(100% - 2.5rem); /* Adjust width to connect nodes */
-            height: 2px;
-            background-color: #4B5563; /* gray-600 */
-            z-index: 5;
-        }
-        .timeline-connector-fill {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 100%;
-            background-color: #22C55E; /* green-500, solid color */
-            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 9999px;
-        }
-        .timeline-horizontal-item:first-child .timeline-connector {
-            display: none;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @keyframes fadeIn {
@@ -726,11 +732,11 @@
             <div id="step-12" class="survey-step step-hidden">
                 <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 6:</span> ¡Pedido en Camino!</h3>
                 <p class="text-gray-200 mb-6">Así es como verás el estado de tu pedido en tiempo real.</p>
-                <div class="demo-mockup p-4 flex flex-col items-center">
+                <div class="demo-mockup p-4 flex flex-col items-center justify-center">
                     <div id="timeline-container-horizontal" class="w-full max-w-md bg-transparent rounded-lg mb-4">
-                        <!-- Horizontal timeline will be injected here -->
+                        <!-- The timeline will be injected by JS -->
                     </div>
-                    <div id="delivery-time-container" class="w-full max-w-md text-center opacity-0 transition-opacity duration-500">
+                    <div id="delivery-time-container" class="w-full max-w-md text-center opacity-0 transition-opacity duration-500 mt-4">
                         <!-- Delivery time will be injected here -->
                     </div>
                 </div>
@@ -1373,87 +1379,81 @@
                 if (!container || !deliveryTimeContainer) return;
 
                 const timelineItems = [
-                    {
-                        text: 'Preparando pedido',
-                        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>`
-                    },
-                    {
-                        text: 'En ruta',
-                        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H3.375A2.25 2.25 0 001.125 6.75v10.5a2.25 2.25 0 002.25 2.25z" /></svg>`
-                    },
-                    {
-                        text: 'Llega hoy',
-                        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
-                    },
-                    {
-                        text: 'Entregado',
-                        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>`
-                    }
+                    { text: 'Preparando pedido', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>` },
+                    { text: 'En ruta', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H3.375A2.25 2.25 0 001.125 6.75v10.5a2.25 2.25 0 002.25 2.25z" /></svg>` },
+                    { text: 'Llega hoy', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>` },
+                    { text: 'Entregado', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>` }
                 ];
 
-                let htmlContent = '<div class="timeline-horizontal-container">';
+                // Build the HTML structure
+                let itemsHtml = '';
                 timelineItems.forEach((item, index) => {
-                    htmlContent += `
-                        <div id="timeline-item-${index}" class="timeline-horizontal-item">
-                            <div class="timeline-connector"><div id="timeline-connector-fill-${index}" class="timeline-connector-fill"></div></div>
+                    itemsHtml += `
+                        <div class="timeline-horizontal-item">
                             <div id="timeline-node-${index}" class="timeline-node">${item.icon}</div>
                             <div id="timeline-label-${index}" class="timeline-label">${item.text}</div>
                         </div>
                     `;
                 });
-                htmlContent += '</div>';
-                container.innerHTML = htmlContent;
-                deliveryTimeContainer.innerHTML = ''; // Clear previous content
+
+                container.innerHTML = `
+                    <div class="timeline-horizontal-container-wrapper">
+                        <div class="timeline-line"></div>
+                        <div id="timeline-progress-line"></div>
+                        <div class="timeline-horizontal-container">${itemsHtml}</div>
+                    </div>
+                `;
+                deliveryTimeContainer.innerHTML = '';
 
                 const animateTimeline = () => {
-                    let currentStep = 0;
+                    const progressLine = document.getElementById('timeline-progress-line');
+                    const numItems = timelineItems.length;
+                    const stepDuration = 800; // ms
 
-                    function nextStep() {
-                        if (currentStep >= timelineItems.length) {
-                            // After the last step, show the delivery time
-                            const deliveryTime = new Date();
-                            const formattedTime = deliveryTime.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+                    for (let i = 0; i < numItems; i++) {
+                        setTimeout(() => {
+                            const node = document.getElementById(`timeline-node-${i}`);
+                            const label = document.getElementById(`timeline-label-${i}`);
+                            if (node) node.classList.add('active');
+                            if (label) label.classList.add('active');
 
-                            deliveryTimeContainer.innerHTML = `
-                                <div class="flex items-center justify-center space-x-2 bg-green-500/10 border border-green-500/30 rounded-full px-4 py-2">
-                                    <svg class="w-6 h-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                    </svg>
-                                    <span class="font-semibold text-white">Entregado a las ${formattedTime}</span>
-                                </div>
-                            `;
-                            deliveryTimeContainer.style.opacity = '1';
-                            return;
-                        }
-
-                        const item = document.getElementById(`timeline-item-${currentStep}`);
-                        if (item) {
-                           item.style.opacity = '1';
-                           item.style.transform = 'translateY(0)';
-                        }
-
-                        const node = document.getElementById(`timeline-node-${currentStep}`);
-                        if (node) node.classList.add('active');
-
-                        const label = document.getElementById(`timeline-label-${currentStep}`);
-                        if (label) label.classList.add('active');
-
-                        if (currentStep < timelineItems.length) {
-                             const nextConnectorFill = document.getElementById(`timeline-connector-fill-${currentStep + 1}`);
-                             if (nextConnectorFill) {
+                            const progressPercentage = (i / (numItems - 1)) * 100;
+                            // For the first item, start the line fill immediately.
+                            // For subsequent items, the line should fill up *to* the current point.
+                            if (progressLine) {
+                                let targetWidth = i === 0 ? 0 : ((i - 0.5) / (numItems - 1)) * 80 + 10;
+                                if (i > 0) {
+                                     progressLine.style.width = `${targetWidth}%`;
+                                }
                                 setTimeout(() => {
-                                    nextConnectorFill.style.width = '100%';
-                                }, 300);
-                             }
-                        }
+                                   if (i < numItems -1) {
+                                        targetWidth = (i / (numItems - 1)) * 80 + 10;
+                                        progressLine.style.width = `${targetWidth}%`;
+                                   } else {
+                                        progressLine.style.width = '100%';
+                                   }
+                                }, stepDuration / 2);
+                            }
 
-                        currentStep++;
-                        setTimeout(nextStep, 800);
+                            // If it's the last step, show delivery time
+                            if (i === numItems - 1) {
+                                setTimeout(() => {
+                                    const deliveryTime = new Date();
+                                    const formattedTime = deliveryTime.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+                                    deliveryTimeContainer.innerHTML = `
+                                        <div class="flex items-center justify-center space-x-2 bg-green-500/10 border border-green-500/30 rounded-full px-4 py-2">
+                                            <svg class="w-6 h-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                            <span class="font-semibold text-white">Entregado a las ${formattedTime}</span>
+                                        </div>
+                                    `;
+                                    deliveryTimeContainer.style.opacity = '1';
+                                }, stepDuration);
+                            }
+                        }, i * stepDuration);
                     }
-                    setTimeout(nextStep, 200);
                 };
 
-                animateTimeline();
+                setTimeout(animateTimeline, 200); // Initial delay before starting animation
             }
 
             showStep(1);
