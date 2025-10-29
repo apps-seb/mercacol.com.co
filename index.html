@@ -888,9 +888,13 @@
                     <p class="text-sm text-green-400">Usuarios registrados</p>
                 </div>
             </div>
+             <button id="show-stats-btn" class="flex items-center space-x-2 font-bold py-2 px-4 rounded-full shadow-lg transform transition-all duration-300 bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 active:scale-95">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                <span>Ver Estadísticas</span>
+            </button>
         </header>
         <main class="p-8" style="max-height: 70vh; overflow-y: auto;">
-            <div class="bg-white/5 p-4 rounded-lg border border-white/10 mb-6">
+            <div id="export-controls" class="bg-white/5 p-4 rounded-lg border border-white/10 mb-6">
                 <h3 class="text-lg font-semibold mb-4 text-white">Exportar Datos</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -917,6 +921,17 @@
                 <!-- User cards will be injected here by JavaScript -->
                 <p class="text-center text-gray-300">Aún no hay usuarios registrados.</p>
             </div>
+
+            <!-- Stats View -->
+            <div id="stats-view" class="hidden">
+                 <button id="back-to-users-btn" class="mb-6 flex items-center space-x-2 font-bold py-2 px-4 rounded-full shadow-lg transform transition-all duration-300 bg-gray-600 text-white hover:bg-gray-700 hover:scale-105 active:scale-95">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    <span>Volver</span>
+                </button>
+                <div id="stats-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Stat cards will be injected here -->
+                </div>
+            </div>
         </main>
     </div>
 
@@ -942,6 +957,26 @@
             const historyToggleButton = document.getElementById('history-toggle-button');
             const cartIcon = document.getElementById('cart-icon');
             const closeIcon = document.getElementById('close-icon');
+
+            // New elements for stats view
+            const showStatsBtn = document.getElementById('show-stats-btn');
+            const backToUsersBtn = document.getElementById('back-to-users-btn');
+            const statsView = document.getElementById('stats-view');
+            const userListContainer = document.getElementById('user-list-container');
+            const exportControls = document.getElementById('export-controls');
+
+            showStatsBtn.addEventListener('click', () => {
+                userListContainer.classList.add('hidden');
+                exportControls.classList.add('hidden');
+                statsView.classList.remove('hidden');
+                generateAndDisplayStats();
+            });
+
+            backToUsersBtn.addEventListener('click', () => {
+                statsView.classList.add('hidden');
+                userListContainer.classList.remove('hidden');
+                exportControls.classList.remove('hidden');
+            });
 
             historyToggleButton.addEventListener('click', () => {
                 const isHistoryVisible = !historySection.classList.contains('hidden');
@@ -1583,6 +1618,195 @@
                     exportToExcel(users);
                 }
             });
+
+            async function generateAndDisplayStats() {
+                const statsContainer = document.getElementById('stats-container');
+                statsContainer.innerHTML = '<p class="text-center text-gray-300 md:col-span-2">Calculando estadísticas...</p>';
+
+                try {
+                    const snapshot = await db.collection('users').get();
+                    if (snapshot.empty) {
+                        statsContainer.innerHTML = '<p class="text-center text-gray-300 md:col-span-2">No hay suficientes datos para generar estadísticas.</p>';
+                        return;
+                    }
+
+                    const responses = snapshot.docs.map(doc => doc.data());
+                    const totalResponses = responses.length;
+
+                    // 1. Total Responses
+                    const totalCard = createStatCard('Encuestados Totales', totalResponses, 'users');
+
+                    // 2. Biggest Challenge ('desafio')
+                    const desafioCounts = countOccurrences(responses, 'desafio');
+                    const desafioCard = createBarChartCard('Mayor Desafío de los Tenderos', desafioCounts, {
+                        'tiempo': 'Pérdida de tiempo',
+                        'precios': 'Precios injustos',
+                        'calidad': 'Calidad inconsistente',
+                        'horarios': 'Horarios difíciles'
+                    }, 'chart-pie');
+
+                    // 3. App Usefulness ('utilidad')
+                    const utilidadCounts = countOccurrences(responses, 'utilidad');
+                    const utilidadCard = createBarChartCard('¿Probarían la App?', utilidadCounts, {
+                        'muy_util': 'Muy útil',
+                        'util': 'La probarían',
+                        'dudas': 'Tienen dudas',
+                        'no_util': 'No la usarían'
+                    }, 'thumb-up');
+
+                    // 4. Shopping Habits ('habitos' - this is an array)
+                    const habitosCounts = countArrayElements(responses, 'habitos');
+                    const habitosCard = createBarChartCard('Métodos de Compra Actuales', habitosCounts, {
+                        'plaza': 'Van a la plaza',
+                        'proveedores': 'Proveedores fijos',
+                        'telefono': 'Pedidos por teléfono',
+                        'otro': 'Otro'
+                    }, 'shopping-cart');
+
+                    // 5. Location by Comuna ('ubicacion')
+                    const comunaMap = createComunaMap();
+                    const comunaCounts = countComunas(responses, 'ubicacion', comunaMap);
+                    const comunaCard = createBarChartCard('Tiendas por Comuna', comunaCounts, {}, 'location-marker');
+
+                    statsContainer.innerHTML = totalCard + comunaCard + desafioCard + utilidadCard + habitosCard;
+
+                    document.querySelectorAll('.stat-number').forEach(animateCounter);
+
+                } catch (error) {
+                    console.error("Error generando estadísticas:", error);
+                    statsContainer.innerHTML = '<p class="text-center text-red-400 md:col-span-2">Error al cargar las estadísticas.</p>';
+                }
+            }
+
+            function animateCounter(element) {
+                const target = parseInt(element.getAttribute('data-target'), 10);
+                if (isNaN(target)) return;
+
+                const duration = 1200;
+                const startTime = performance.now();
+
+                function step(currentTime) {
+                    const elapsedTime = currentTime - startTime;
+                    const progress = Math.min(elapsedTime / duration, 1);
+                    const current = Math.floor(progress * target);
+                    element.textContent = current;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        element.textContent = target; // Ensure it ends on the exact number
+                    }
+                }
+
+                requestAnimationFrame(step);
+            }
+
+            function countOccurrences(responses, key) {
+                return responses.reduce((acc, response) => {
+                    const value = response[key];
+                    if (value) {
+                        acc[value] = (acc[value] || 0) + 1;
+                    }
+                    return acc;
+                }, {});
+            }
+
+            function countArrayElements(responses, key) {
+                return responses.reduce((acc, response) => {
+                    const array = response[key];
+                    if (Array.isArray(array)) {
+                        array.forEach(item => {
+                            acc[item] = (acc[item] || 0) + 1;
+                        });
+                    }
+                    return acc;
+                }, {});
+            }
+
+            function createComunaMap() {
+                const map = {};
+                const optgroups = document.querySelectorAll('select[name="ubicacion"] optgroup');
+                optgroups.forEach(group => {
+                    const comunaName = group.label;
+                    const options = group.querySelectorAll('option');
+                    options.forEach(option => {
+                        map[option.value] = comunaName;
+                    });
+                });
+                return map;
+            }
+
+            function countComunas(responses, key, comunaMap) {
+                 return responses.reduce((acc, response) => {
+                    const barrio = response[key];
+                    if (barrio && comunaMap[barrio]) {
+                        const comuna = comunaMap[barrio];
+                        acc[comuna] = (acc[comuna] || 0) + 1;
+                    } else if (barrio) {
+                        acc['Otro'] = (acc['Otro'] || 0) + 1;
+                    }
+                    return acc;
+                }, {});
+            }
+
+            function getIcon(name) {
+                const icons = {
+                    'users': `<svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>`,
+                    'chart-pie': `<svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.158 2.05A12.003 12.003 0 006.88 15.157L2.83 2.828l12.328-.778zM21.94 8.843c.033.15.06.3.06.457 0 6.627-5.373 12-12 12-4.43 0-8.28-2.39-10.44-5.885L15.158 2.05A11.957 11.957 0 0121.94 8.843z" /></svg>`,
+                    'thumb-up': `<svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.085a2 2 0 00-1.736.93L5.5 8m7 2v5m0 0v5m0-5h-2.187a2 2 0 01-1.638-.919l-2.222-3.333a2 2 0 01.163-2.618l2.29-1.527a2 2 0 012.163.023L14 10z" /></svg>`,
+                    'shopping-cart': `<svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>`,
+                    'location-marker': `<svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`,
+                };
+                return icons[name] || '';
+            }
+
+            function createStatCard(title, value, iconName) {
+                return `
+                    <div class="bg-white/10 p-6 rounded-2xl border border-white/20 flex flex-col items-center justify-center text-center transform hover:scale-105 transition-transform duration-300 md:col-span-2">
+                        <div class="text-green-400 mb-4">
+                            ${getIcon(iconName)}
+                        </div>
+                        <h3 class="text-4xl font-extrabold text-white stat-number" data-target="${value}">0</h3>
+                        <p class="text-lg font-semibold text-gray-300 mt-2">${title}</p>
+                    </div>
+                `;
+            }
+
+            function createBarChartCard(title, data, labels, iconName) {
+                const total = Object.values(data).reduce((sum, count) => sum + count, 0);
+                if (total === 0) return '';
+
+                const sortedData = Object.entries(data).sort(([,a],[,b]) => b-a);
+
+                let barsHtml = '';
+                sortedData.forEach(([key, count]) => {
+                    const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+                    const label = labels[key] || key;
+                    barsHtml += `
+                        <div class="w-full">
+                            <div class="flex justify-between items-center mb-1 text-sm">
+                                <span class="text-gray-300 font-medium">${label}</span>
+                                <span class="font-bold text-white">${count}</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                return `
+                    <div class="bg-white/10 p-6 rounded-2xl border border-white/20 transform hover:scale-105 transition-transform duration-300">
+                        <div class="flex items-center text-green-400 mb-4">
+                            ${getIcon(iconName)}
+                            <h3 class="text-xl font-bold text-white ml-3">${title}</h3>
+                        </div>
+                        <div class="space-y-4">
+                            ${barsHtml}
+                        </div>
+                    </div>
+                `;
+            }
         });
     </script>
 </body>
