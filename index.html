@@ -157,23 +157,24 @@
             width: 2.5rem; /* 40px */
             height: 2.5rem; /* 40px */
             border-radius: 9999px;
-            background-color: #4B5563; /* gray-600 */
+            background-color: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 3px solid #6B7280; /* gray-500 */
-            transition: all 0.4s ease;
+            border: 2px solid #4B5563; /* gray-600 */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 10;
         }
         .timeline-node.active {
             background-color: #22C55E; /* green-500 */
-            border-color: #16A34A; /* green-700 */
+            border-color: #22C55E;
             transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
         }
         .timeline-node svg {
             width: 1.25rem;
             height: 1.25rem;
-            color: #D1D5DB; /* gray-300 */
+            color: #6B7280; /* gray-500 */
             transition: color 0.4s ease;
         }
         .timeline-node.active svg {
@@ -185,20 +186,20 @@
             line-height: 1rem; /* 16px */
             text-align: center;
             width: 5rem; /* 80px */
-            color: #D1D5DB; /* gray-300 */
+            color: #9CA3AF; /* gray-400 */
             transition: color 0.4s ease;
         }
         .timeline-label.active {
             color: white;
-            font-weight: 600;
+            font-weight: 700;
         }
         .timeline-connector {
             position: absolute;
-            top: calc(1.25rem - 2px); /* center vertically with the node */
+            top: calc(1.25rem - 1px); /* center vertically with the node */
             right: 50%;
             width: 100%;
-            height: 4px;
-            background-color: #6B7280; /* gray-500 */
+            height: 2px;
+            background-color: #4B5563; /* gray-600 */
             z-index: 5;
         }
         .timeline-connector-fill {
@@ -207,8 +208,9 @@
             left: 0;
             width: 0%;
             height: 100%;
-            background-color: #22C55E; /* green-500 */
-            transition: width 0.6s ease-in-out;
+            background-image: linear-gradient(to right, #16A34A, #22C55E, #4ADE80);
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 9999px;
         }
         .timeline-horizontal-item:first-child .timeline-connector {
             display: none;
@@ -724,9 +726,12 @@
             <div id="step-12" class="survey-step step-hidden">
                 <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 6:</span> ¡Pedido en Camino!</h3>
                 <p class="text-gray-200 mb-6">Así es como verás el estado de tu pedido en tiempo real.</p>
-                <div class="demo-mockup p-4 flex items-center">
-                    <div id="timeline-container-horizontal" class="w-full max-w-md bg-transparent rounded-lg">
+                <div class="demo-mockup p-4 flex flex-col items-center">
+                    <div id="timeline-container-horizontal" class="w-full max-w-md bg-transparent rounded-lg mb-4">
                         <!-- Horizontal timeline will be injected here -->
+                    </div>
+                    <div id="delivery-time-container" class="w-full max-w-md text-center opacity-0 transition-opacity duration-500">
+                        <!-- Delivery time will be injected here -->
                     </div>
                 </div>
             </div>
@@ -1364,7 +1369,8 @@
 
             function startHorizontalTimelineAnimation() {
                 const container = document.getElementById('timeline-container-horizontal');
-                if (!container) return;
+                const deliveryTimeContainer = document.getElementById('delivery-time-container');
+                if (!container || !deliveryTimeContainer) return;
 
                 const timelineItems = [
                     {
@@ -1397,35 +1403,48 @@
                 });
                 htmlContent += '</div>';
                 container.innerHTML = htmlContent;
+                deliveryTimeContainer.innerHTML = ''; // Clear previous content
 
                 const animateTimeline = () => {
                     let currentStep = 0;
 
                     function nextStep() {
-                        if (currentStep >= timelineItems.length) return;
+                        if (currentStep >= timelineItems.length) {
+                            // After the last step, show the delivery time
+                            const deliveryTime = new Date();
+                            deliveryTime.setHours(deliveryTime.getHours() + 1);
+                            const formattedTime = deliveryTime.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
 
-                        // Animate item fade in
+                            deliveryTimeContainer.innerHTML = `
+                                <div class="flex items-center justify-center space-x-2 bg-green-500/10 border border-green-500/30 rounded-full px-4 py-2">
+                                    <svg class="w-6 h-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg>
+                                    <span class="font-semibold text-white">Entregado a las ${formattedTime}</span>
+                                </div>
+                            `;
+                            deliveryTimeContainer.style.opacity = '1';
+                            return;
+                        }
+
                         const item = document.getElementById(`timeline-item-${currentStep}`);
-                        if(item) {
+                        if (item) {
                            item.style.opacity = '1';
                            item.style.transform = 'translateY(0)';
                         }
 
-                        // Animate node
                         const node = document.getElementById(`timeline-node-${currentStep}`);
                         if (node) node.classList.add('active');
 
-                        // Animate label
                         const label = document.getElementById(`timeline-label-${currentStep}`);
                         if (label) label.classList.add('active');
 
-                        // Animate connector fill for the *next* item
                         if (currentStep < timelineItems.length) {
                              const nextConnectorFill = document.getElementById(`timeline-connector-fill-${currentStep + 1}`);
-                             if(nextConnectorFill) {
+                             if (nextConnectorFill) {
                                 setTimeout(() => {
                                     nextConnectorFill.style.width = '100%';
-                                }, 300); // Start fill after node is active
+                                }, 300);
                              }
                         }
 
