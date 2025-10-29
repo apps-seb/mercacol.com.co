@@ -1065,11 +1065,14 @@
                 productListContainer.innerHTML = '';
                 productCatalog.forEach(product => {
                     const isSelected = cart.hasOwnProperty(product.id);
-                    const selectedClasses = isSelected ? 'ring-2 ring-green-500 shadow-lg' : '';
+                    const selectedClasses = isSelected ? 'ring-2 ring-green-500 shadow-lg' : 'ring-1 ring-transparent';
                     productListContainer.innerHTML += `
-                        <div class="product-item w-full h-10 bg-white/20 rounded flex items-center justify-between px-3 cursor-pointer hover:bg-white/30 ${selectedClasses}" data-product-id="${product.id}">
-                            <span class="text-sm">${product.name}</span>
-                            <span class="text-green-400 font-bold">${isSelected ? '✓' : '+'}</span>
+                        <div class="product-item w-full bg-white/10 rounded-lg flex items-center justify-between p-3 cursor-pointer hover:bg-white/20 transition-all duration-200 ${selectedClasses}" data-product-id="${product.id}">
+                            <div>
+                                <span class="font-semibold text-white">${product.name}</span>
+                                <span class="text-sm text-green-400 block">${formatCurrency(product.pricePerKg)}/kg</span>
+                            </div>
+                            <span class="text-green-400 font-bold text-2xl">${isSelected ? '✓' : '+'}</span>
                         </div>
                     `;
                 });
@@ -1088,9 +1091,21 @@
                 cartItems.forEach(productId => {
                     const product = productCatalog.find(p => p.id === productId);
                     const cartItem = cart[productId];
+
+                    let price = (cartItem.unit === 'kg')
+                        ? cartItem.quantity * product.pricePerKg
+                        : cartItem.quantity * (product.pricePerKg / 2.20462);
+
+                    if (product.offer) {
+                        price *= (1 - product.offer / 100);
+                    }
+
                     quantityAdjusterContainer.innerHTML += `
                         <div class="bg-white/10 p-3 rounded-lg">
-                            <h5 class="font-semibold text-center mb-2">${product.name}</h5>
+                            <div class="flex justify-between items-center mb-2">
+                                <h5 class="font-semibold">${product.name}</h5>
+                                <span class="font-bold text-green-400 text-lg">${formatCurrency(price)}</span>
+                            </div>
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
                                     <button class="btn-minus w-8 h-8 rounded-full bg-white/20 text-green-400 text-2xl font-bold flex items-center justify-center" data-product-id="${product.id}">-</button>
@@ -1421,18 +1436,15 @@
                             // For the first item, start the line fill immediately.
                             // For subsequent items, the line should fill up *to* the current point.
                             if (progressLine) {
-                                let targetWidth = i === 0 ? 0 : ((i - 0.5) / (numItems - 1)) * 80 + 10;
                                 if (i > 0) {
-                                     progressLine.style.width = `${targetWidth}%`;
-                                }
-                                setTimeout(() => {
-                                   if (i < numItems -1) {
-                                        targetWidth = (i / (numItems - 1)) * 80 + 10;
+                                    let halfStepWidth = ((i - 0.5) / (numItems - 1)) * 80;
+                                    progressLine.style.width = `${halfStepWidth}%`;
+
+                                    setTimeout(() => {
+                                        let targetWidth = (i / (numItems - 1)) * 80;
                                         progressLine.style.width = `${targetWidth}%`;
-                                   } else {
-                                        progressLine.style.width = '100%';
-                                   }
-                                }, stepDuration / 2);
+                                    }, stepDuration / 2);
+                                }
                             }
 
                             // If it's the last step, show delivery time
