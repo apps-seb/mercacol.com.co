@@ -618,30 +618,56 @@
                 </select>
             </div>
 
+
             <div id="step-5" class="survey-step step-hidden">
-                <h3 class="text-xl font-semibold mb-6">4. Pensando en la logística de Popayán, ¿qué horario de entrega prefieres?</h3>
+                <h3 class="text-xl font-semibold mb-6">4. ¿Cuáles son los productos agrícolas o de pan coger que generan mayor volumen de ventas en su tienda?</h3>
+                <textarea name="productos_mas_vendidos" class="w-full p-3 rounded-lg border outline-none placeholder-gray-300 text-white form-input-glass ring-1 ring-transparent focus:ring-green-400" placeholder="Ej: Papa, tomate, cebolla, plátano..."></textarea>
+            </div>
+
+            <div id="step-6" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">5. ¿Con qué frecuencia reabastece su inventario de productos agrícolas para optimizar sus ventas?</h3>
                 <div class="space-y-4">
                     <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
-                        <input type="radio" name="horario" value="manana_temprano" class="w-5 h-5 accent-green-500">
-                        <span>Temprano en la mañana (6:00 AM - 9:00 AM)</span>
+                        <input type="radio" name="frecuencia_reabastecimiento" value="diario" class="w-5 h-5 accent-green-500">
+                        <span>Diario</span>
                     </label>
                     <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
-                        <input type="radio" name="horario" value="media_manana" class="w-5 h-5 accent-green-500">
-                        <span>Media mañana (9:00 AM - 12:00 PM)</span>
-                    </label>
-                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
-                        <input type="radio" name="horario" value="tarde" class="w-5 h-5 accent-green-500">
-                        <span>En la tarde (1:00 PM - 4:00 PM)</span>
-                    </label>
-                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
-                        <input type="radio" name="horario" value="indiferente" class="w-5 h-5 accent-green-500">
-                        <span>Me es indiferente mientras cumplan.</span>
+                        <input type="radio" name="frecuencia_reabastecimiento" value="semanal" class="w-5 h-5 accent-green-500">
+                        <span>Semanal</span>
                     </label>
                 </div>
             </div>
 
-            <div id="step-6" class="survey-step step-hidden">
-                <h3 class="text-xl font-semibold mb-6">5. Nuestra idea: Una App Mercacol</h3>
+            <div id="step-7" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">6. ¿Sus clientes buscan productos orgánicos o sostenibles?</h3>
+                 <div class="space-y-4">
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="productos_organicos" value="si" class="w-5 h-5 accent-green-500">
+                        <span>Sí</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="productos_organicos" value="no" class="w-5 h-5 accent-green-500">
+                        <span>No</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="step-8" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">7. ¿Estaría interesado en alianzas con proveedores que ofrezcan descuentos por volumen o entregas programadas?</h3>
+                <div class="space-y-4">
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="alianzas_proveedores" value="si" class="w-5 h-5 accent-green-500">
+                        <span>Sí</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
+                        <input type="radio" name="alianzas_proveedores" value="no" class="w-5 h-5 accent-green-500">
+                        <span>No</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="step-9" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">8. Nuestra idea: Una App Mercacol</h3>
                 <p class="text-gray-200 mb-4">Estamos creando una app para que pidas todo desde tu celular, con precios justos y entrega en tu tienda.</p>
                 <p class="text-gray-200 mb-6">Te mostraremos qué tan fácil será. <strong class="text-green-400">¡Sigue los pasos!</strong></p>
                 <div class="demo-mockup">
@@ -657,7 +683,7 @@
                 </div>
             </div>
 
-            <div id="step-7" class="survey-step step-hidden">
+            <div id="step-10" class="survey-step step-hidden">
                 <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 1:</span> Revisa los Precios del Día</h3>
                 <p class="text-gray-200 mb-6">Estos son nuestros precios de hoy. ¡Siempre frescos, siempre justos!</p>
                 <div class="demo-mockup">
@@ -669,7 +695,7 @@
                 </div>
             </div>
 
-            <div id="step-8" class="survey-step step-hidden">
+            <div id="step-11" class="survey-step step-hidden">
                 <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 2:</span> Agrega Productos</h3>
                 <p class="text-gray-200 mb-6">Ahora, simplemente toca los productos que necesitas de la lista.</p>
                 <div class="demo-mockup">
@@ -680,7 +706,7 @@
                 </div>
             </div>
 
-            <div id="step-9" class="survey-step step-hidden">
+            <div id="step-12" class="survey-step step-hidden">
                 <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 3:</span> Selecciona la Cantidad</h3>
                 <p class="text-gray-200 mb-6">Ajusta las libras o kilos que necesites. Sin compliques.</p>
                 <div class="demo-mockup">
@@ -691,7 +717,7 @@
                 </div>
             </div>
 
-            <div id="step-10" class="survey-step step-hidden">
+            <div id="step-13" class="survey-step step-hidden">
                 <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 4:</span> Mira tu Resumen</h3>
                 <p class="text-gray-200 mb-6">Revisas tu pedido y el total en tu carrito. Todo transparente.</p>
                 <div class="demo-mockup">
@@ -716,7 +742,7 @@
                 </button>
             </div>
 
-            <div id="step-11" class="survey-step step-hidden">
+            <div id="step-14" class="survey-step step-hidden">
                 <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 5:</span> Confirma tu Compra</h3>
                 <p class="text-gray-200 mb-6">¡Un clic y listo! Nosotros nos encargamos del resto.</p>
                 <div class="demo-mockup">
@@ -729,7 +755,7 @@
                 </div>
             </div>
 
-            <div id="step-12" class="survey-step step-hidden">
+            <div id="step-15" class="survey-step step-hidden">
                 <h3 class="text-xl font-semibold mb-4"><span class="text-green-400">Demo Paso 6:</span> ¡Pedido en Camino!</h3>
                 <p class="text-gray-200 mb-6">Así es como verás el estado de tu pedido en tiempo real.</p>
                 <div class="demo-mockup p-4 flex flex-col items-center justify-center">
@@ -742,8 +768,8 @@
                 </div>
             </div>
             
-            <div id="step-13" class="survey-step step-hidden">
-                <h3 class="text-xl font-semibold mb-6">6. ¿Qué te pareció este flujo?</h3>
+            <div id="step-16" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">9. ¿Qué te pareció este flujo?</h3>
                 <p class="text-gray-200 mb-6">Viendo lo fácil que sería, ¿qué tan útil te parecería esta solución?</p>
                 <div class="space-y-4">
                     <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
@@ -765,8 +791,8 @@
                 </div>
             </div>
 
-            <div id="step-14" class="survey-step step-hidden">
-                <h3 class="text-xl font-semibold mb-6">7. ¿Qué sería lo MÁS importante para ti en la app final?</h3>
+            <div id="step-17" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">10. ¿Qué sería lo MÁS importante para ti en la app final?</h3>
                 <p class="text-sm text-gray-300 mb-4">(Elige hasta 3)</p>
                 <div class="space-y-4">
                     <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
@@ -792,8 +818,8 @@
                 </div>
             </div>
 
-            <div id="step-15" class="survey-step step-hidden">
-                <h3 class="text-xl font-semibold mb-6">8. Además de comprar, ¿qué otra función te gustaría tener en la app?</h3>
+            <div id="step-18" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">11. Además de comprar, ¿qué otra función te gustaría tener en la app?</h3>
                 <p class="text-sm text-gray-300 mb-4">(Elige las que quieras)</p>
                 <div class="space-y-4">
                     <label class="flex items-center space-x-3 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20">
@@ -815,8 +841,8 @@
                 </div>
             </div>
             
-            <div id="step-16" class="survey-step step-hidden">
-                <h3 class="text-xl font-semibold mb-6">9. ¡Ya casi terminamos!</h3>
+            <div id="step-19" class="survey-step step-hidden">
+                <h3 class="text-xl font-semibold mb-6">12. ¡Ya casi terminamos!</h3>
                 <p class="text-gray-200 mb-6">Déjanos tu contacto para ser de los primeros en probar la app y recibir un <strong class="text-green-400">bono de bienvenida</strong>.</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-white/10 p-4 rounded-lg flex items-start space-x-4 md:col-span-2">
@@ -850,7 +876,7 @@
                 </div>
             </div>
 
-            <div id="step-17" class="survey-step step-hidden">
+            <div id="step-20" class="survey-step step-hidden">
                 <div class="text-center">
                     <svg class="w-16 h-16 text-green-400 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -1291,8 +1317,8 @@
                     }
                 });
                 
-                // El paso de resumen ahora es el 10
-                if (stepNum !== 10 && btnDemoSummaryConfirm) {
+                // El paso de resumen ahora es el 13
+                if (stepNum !== 13 && btnDemoSummaryConfirm) {
                     btnDemoSummaryConfirm.disabled = false;
                     checkIcon.classList.add('hidden');
                     btnConfirmText.textContent = 'Confirmar Pedido';
@@ -1303,18 +1329,18 @@
 
                 btnPrev.classList.toggle('hidden', stepNum === 1);
                 
-                const hideNextButtonSteps = [10, 11, totalSteps - 1, totalSteps]; 
+                const hideNextButtonSteps = [13, 14, totalSteps - 1, totalSteps];
                 btnNext.classList.toggle('hidden', hideNextButtonSteps.includes(stepNum));
                 
                 btnFinish.classList.toggle('hidden', stepNum !== totalSteps - 1);
                 navButtons.classList.toggle('hidden', stepNum === totalSteps);
                 
-                // El demo ahora va del paso 7 al 12
-                if (stepNum >= 7 && stepNum <= 12) {
+                // El demo ahora va del paso 10 al 15
+                if (stepNum >= 10 && stepNum <= 15) {
                     renderAllDemoParts();
                 }
 
-                if (stepNum === 12) {
+                if (stepNum === 15) {
                     startHorizontalTimelineAnimation();
                 }
             }
@@ -1429,10 +1455,11 @@
                 if (!container || !deliveryTimeContainer) return;
 
                 const timelineItems = [
-                    { text: 'Preparando pedido', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>` },
+                    { text: 'Procesando tu pedido', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>` },
+                    { text: 'Preparando tu pedido', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>` },
+                    { text: 'En centro de distribución Popayán', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H3.375A2.25 2.25 0 001.125 6.75v10.5a2.25 2.25 0 002.25 2.25z" /></svg>` },
                     { text: 'En ruta', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H3.375A2.25 2.25 0 001.125 6.75v10.5a2.25 2.25 0 002.25 2.25z" /></svg>` },
-                    { text: 'Llega hoy', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>` },
-                    { text: 'Entregado', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>` }
+                    { text: 'Llegará mañana', icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>` }
                 ];
 
                 // Build the HTML structure
